@@ -1,0 +1,77 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    ChromeWebView = {
+	Actions = (
+	    "setDelegate:",
+	    "stopLoading:",
+	    "goBack:",
+	    "goForward:"
+	);
+	Outlets = (
+	    delegate
+	);
+	Super = ExternalWebView;
+    };
+    Document = {
+	Actions = (
+	    "loadLocation:"
+	);
+	Outlets = (
+	    window,
+	    webView,
+	    addressField,
+	    statusField
+	);
+	Super = NSObject;
+    };
+    ExternalWebView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = XEmbeddedView;
+    };
+    FirstResponder = {
+	Actions = (
+	    "goBack:",
+	    "goForward:",
+	    "goHome:",
+	    "loadLocation:",
+	    "loadURL:",
+	    "remapXWindow:",
+	    "setDelegate:",
+	    "stopLoading:"
+	);
+	Super = NSObject;
+    };
+    GTKWebView = {
+	Actions = (
+	    "goBack:",
+	    "goForward:"
+	);
+	Outlets = (
+	);
+	Super = GTKWidgetView;
+    };
+    GTKWidgetView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+    WebView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = XEmbeddedView;
+    };
+    XEmbeddedView = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSView;
+    };
+}

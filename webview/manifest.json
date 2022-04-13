@@ -1,0 +1,29 @@
+{
+  "name": "webview",
+  "description": "webview",
+  "version": "0.1",
+  "manifest_version": 2,
+  "permissions": [
+    "webview",
+    {"fileSystem": ["read"]}
+  ],
+  "kiosk_eabled": true,
+  "kiosk_only": true,
+  "offline_enabled": true,
+  "file_handlers": {
+    "any": {
+      "extensions": ["pid"]
+    }
+  },
+  "sockets": {
+    "tcp": {
+      "connect": ""
+    }
+  },
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": { "16": "icon.jpg", "128": "icon.jpg"}
+}

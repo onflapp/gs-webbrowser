@@ -1,0 +1,124 @@
+{
+    APPLICATIONICON = "";
+    "APP_DOCUMENT_BASED" = NO;
+    "APP_TYPE" = GORM;
+    "BUILDER_TARGETS" = (
+	all,
+	install,
+	uninstall,
+	clean,
+	distclean,
+	dist
+    );
+    "BUILDER_VERBOSE" = YES;
+    "BUNDLE_IDENTIFIER" = "";
+    "CLASS_FILES" = (
+	"AppController.m",
+	"Document.m",
+	"Preferences.m",
+	"common.m",
+	"XEmbeddedView.m",
+	"ChromeWebView.m",
+	"ExternalWebView.m"
+    );
+    COMPILEROPTIONS = "";
+    CPPOPTIONS = "";
+    "CREATION_DATE" = "2020-07-22 12:15:43 +0300";
+    "DOCU_FILES" = (
+    );
+    FRAMEWORKS = (
+    );
+    "HEADER_FILES" = (
+	"AppController.h",
+	"Document.h",
+	"Preferences.h",
+	"common.h",
+	"XEmbeddedView.h",
+	"xembed.h",
+	"ChromeWebView.h",
+	"ExternalWebView.h"
+    );
+    IMAGES = (
+	"Home.tiff",
+	"Left.tiff",
+	"Right.tiff",
+	"LeftX.tiff",
+	"Link.tiff",
+	"RightX.tiff"
+    );
+    INSTALLDIR = "$(HOME)/GNUstep";
+    INTERFACES = (
+	"WebBrowser.gorm",
+	"Main.gsmarkup",
+	"MainMenu-GNUstep.gsmarkup",
+	"MainMenu-OSX.gsmarkup",
+	"Document.gorm",
+	"Preferences.gorm"
+    );
+    LANGUAGE = English;
+    LIBRARIES = (
+	"gnustep-base",
+	"gnustep-gui"
+    );
+    LINKEROPTIONS = "-lX11";
+    "LOCALIZED_RESOURCES" = (
+    );
+    MAININTERFACE = "WebBrowser.gorm";
+    MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
+    "OBJC_COMPILEROPTIONS" = "";
+    "OTHER_RESOURCES" = (
+    );
+    "OTHER_SOURCES" = (
+	"WebBrowser_main.m",
+	"xembed.c"
+    );
+    "PRINCIPAL_CLASS" = NSApplication;
+    "PROJECT_AUTHORS" = (
+    );
+    "PROJECT_COPYRIGHT" = "Copyright (C) 200x";
+    "PROJECT_COPYRIGHT_DESC" = "Released under ...";
+    "PROJECT_CREATOR" = root;
+    "PROJECT_DESCRIPTION" = "No description avaliable!";
+    "PROJECT_DOCUMENTTYPES" = (
+	{
+	    NSIcon = "html.tiff";
+	    NSUnixExtensions = (
+		html
+	    );
+	}
+    );
+    "PROJECT_GROUP" = "No group avaliable!";
+    "PROJECT_MAINTAINER" = root;
+    "PROJECT_NAME" = WebBrowser;
+    "PROJECT_RELEASE" = "0.1";
+    "PROJECT_SUMMARY" = "No summary avaliable!";
+    "PROJECT_TYPE" = Application;
+    "PROJECT_URL" = "";
+    "SEARCH_HEADER_DIRS" = (
+    );
+    "SEARCH_LIB_DIRS" = (
+    );
+    SUBPROJECTS = (
+    );
+    "SUPPORTING_FILES" = (
+	"GNUmakefile.preamble",
+	GNUmakefile,
+	"GNUmakefile.postamble",
+	"WebBrowserInfo.plist",
+	"Info.plist"
+    );
+    "USER_LANGUAGES" = (
+	English,
+	Ukrainian,
+	German,
+	Dutch,
+	Spanish,
+	French,
+	Italian,
+	Slovak,
+	Hungarian,
+	Russian,
+	TraditionalChinese,
+	Korean
+    );
+}

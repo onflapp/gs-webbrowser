@@ -1,0 +1,42 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    AppController = {
+	Actions = (
+	    "showPrefPanel:",
+	    "newDocument:"
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "save:",
+	    "show:",
+	    "showPrefPanel:"
+	);
+	Super = NSObject;
+    };
+    GTKWebViewSettings = {
+	Actions = (
+	);
+	Outlets = (
+	);
+	Super = NSObject;
+    };
+    Preferences = {
+	Actions = (
+	    "show:",
+	    "save:"
+	);
+	Outlets = (
+	    window,
+	    homeAddress,
+	    searchAddress,
+	    userAgent,
+	    javaScript,
+	    developerTools
+	);
+	Super = NSObject;
+    };
+}
