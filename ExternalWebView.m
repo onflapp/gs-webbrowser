@@ -29,7 +29,7 @@
 
 - (void) startController {
   int sock, reuse = 1;
-  int port = 2222;
+  int port = 0;
   struct sockaddr_in sockaddr;
 
   buff = [NSMutableString new];
@@ -55,6 +55,16 @@
 	    object: listener];
     [listener acceptConnectionInBackgroundAndNotify];
   }
+}
+
+- (void) stopController {
+  //[listener closeFile];
+  [listener release];
+  listener = nil;
+
+  //[remote closeFile];
+  [remote release];
+  remote = nil;
 }
 
 - (Window) createXWindowID {

@@ -236,7 +236,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 - (Window) findXWindowID {
   Display* dpy = XOpenDisplay(NULL);
   Window rootWindow = XDefaultRootWindow(dpy);
-  Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, "crx_gjpjoaajhkcbphcnemdoalnhhdlhgafi");
+  Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, "crx_pfoejeibpefedaclnglndmelhlbjmipa");
   return foundWindow;
 }
 

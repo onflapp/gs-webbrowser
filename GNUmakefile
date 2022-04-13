@@ -43,7 +43,8 @@ Resources/Left.tiff \
 Resources/Right.tiff \
 Resources/LeftX.tiff \
 Resources/Link.tiff \
-Resources/RightX.tiff 
+Resources/RightX.tiff \
+Resources/webview 
 
 
 #

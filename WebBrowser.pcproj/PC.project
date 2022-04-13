@@ -67,6 +67,7 @@
     MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
     "OBJC_COMPILEROPTIONS" = "";
     "OTHER_RESOURCES" = (
+	webview
     );
     "OTHER_SOURCES" = (
 	"WebBrowser_main.m",

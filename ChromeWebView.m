@@ -6,12 +6,32 @@
 - (id) initWithFrame:(NSRect)r {
   self = [super initWithFrame:r];  
   [self startController];
+  [self startProcess];
 
   return self;
 }
 
 - (void) dealloc {
   [super dealloc];
+}
+
+- (void) startProcess {
+  NSString* wp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"webview"];
+  NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];
+
+  NSString* pid = [NSString stringWithFormat:@"%ld", listener_port];
+  NSTask* task = [[NSTask alloc] init];
+  [task setLaunchPath:@"/bin/sh"];
+  [task setArguments:[NSArray arrayWithObjects:path, pid, nil]];
+  [task setCurrentDirectoryPath:wp];
+
+  [task launch];
+}
+
+- (void) destroyXWindow {
+  NSLog(@"destroy");
+  [self stopController];
+  [super destroyXWindow];
 }
 
 - (void) receiveCommand:(NSString*) cmd {

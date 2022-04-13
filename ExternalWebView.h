@@ -33,6 +33,7 @@
   NSFileHandle* listener;
   NSFileHandle* remote;
   NSMutableString* buff;
+  NSInteger listener_port;
 }
 
 - (void) startController;
