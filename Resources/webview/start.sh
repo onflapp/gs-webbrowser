@@ -1,10 +1,11 @@
 #!/bin/bash
 
 CHROME=/usr/bin/google-chrome
-TDIR="$HOME/.cache/webview.$$"
+CHROME=/snap/bin/chromium
+TDIR="$HOME/Library/WebBrowser/webview.$$"
 PFILE="$TDIR/$1.pid"
 
-mkdir "$TDIR"
+mkdir -p "$TDIR"
 cp * "$TDIR"
 
 touch "$PFILE"

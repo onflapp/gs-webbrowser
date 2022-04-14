@@ -5,8 +5,10 @@ chrome.app.runtime.onLaunched.addListener(function(evt) {
 
   chrome.app.window.create('window.html#'+window.myport, {
     innerBounds: {
-      width: 1,
-      height: 1
+      left: -10,
+      top: -10,
+      width: 5,
+      height: 5
     }
   }, 
   function(win) {

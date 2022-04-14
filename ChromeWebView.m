@@ -49,6 +49,12 @@
     [[self window] makeFirstResponder:self];
     [[self window] makeKeyAndOrderFront:self];
   }
+  if ([nm isEqual:@"ON_LOADING_START"]) {
+    [delegate webView:self didStartLoading:[NSURL URLWithString:val]];
+  }
+  if ([nm isEqual:@"ON_LOADING_STOP"]) {
+    [delegate webView:self didFinishLoading:[NSURL URLWithString:val]];
+  }
 }
 
 - (void) setDelegate:(id) del {

@@ -87,7 +87,9 @@
 
 - (void) webView:(id)webView didFinishLoading:(NSURL*) url {
   [addressField setStringValue:[url description]];
-  [statusField setStringValue:[NSString stringWithFormat:@"%@ - loaded", [url host]]];
+  NSString* host = [url host];
+  if (!host) host = @"empty page";
+  [statusField setStringValue:[NSString stringWithFormat:@"%@ - loaded", host]];
 }
 
 - (void) webView:(id)webView didChangeTitle:(NSString*) title {
