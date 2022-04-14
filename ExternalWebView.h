@@ -37,6 +37,7 @@
 }
 
 - (void) startController;
+- (void) stopController;
 - (void) sendCommand:(NSString*) cmd;
 @end
 

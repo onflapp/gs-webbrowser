@@ -9,8 +9,9 @@ window.addEventListener('click', function(evt) {
 window.addEventListener('load', function(evt) {
   var wv = document.getElementById('main');
   window.mywebview = wv;
+  window.mywebviewid = 'ASGGFD-webview-'+window.location.hash.substr(1);
 
-  document.title = 'ASGGFD-webview-'+window.location.hash.substr(1);
+  document.title = window.mywebviewid;
 
   wv.addEventListener('loadstart', function(evt) {
     sendCommand('ON_LOADING_START:'+evt.url);
@@ -31,7 +32,7 @@ window.addEventListener('load', function(evt) {
     console.log(evt);
   });
 
-  sendCommand('ON_READY:xxx');
+  sendCommand('ON_READY:'+window.mywebviewid);
 });
 
 function receiveCommand(cmd) {

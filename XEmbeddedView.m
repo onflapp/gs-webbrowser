@@ -39,6 +39,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
     //Atom atom_PID = XInternAtom(dpy, "_NET_WM_PID", True);
     Atom atom_CLASS = XInternAtom(dpy, "WM_CLASS", True);
+    Atom atom_NAME = XInternAtom(dpy, "WM_NAME", True);
     
     int result = XQueryTree(dpy, rootWindow, &root, &parent, &children, &nchildren);
     unsigned int windowCount = 0;
@@ -70,6 +71,19 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
           NSLog(@">>>> %x %s", win, prop);
           if (strcmp(prop, wmclass) == 0) return win;
         }
+
+        rv = XGetWindowProperty(dpy, win, atom_NAME, 0, 1024,
+                           False, AnyPropertyType,
+                           &actual_type,
+                           &actual_format, &nitems,
+                           &bytes_after,
+                           &prop);
+                           
+        if (rv == Success && prop) {
+          NSLog(@">>>> %x %s", win, prop);
+          if (strcmp(prop, wmclass) == 0) return win;
+        }
+
         Window ww = find_xwinid_wmclass(dpy, win, wmclass);
         if (ww > 0) return ww;   
     }
@@ -86,22 +100,30 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   self = [super initWithFrame:r];
   xwindowid = 0;
   xdisplay = NULL;
+
+  /*
+  [[NSNotificationCenter defaultCenter] addObserver:self 
+					   selector:@selector(deactivateXWindow:) 
+					  name:NSWindowDidResignKeyNotification
+					object:[self window]];
+*/				       
+  [[NSNotificationCenter defaultCenter] addObserver:self 
+					   selector:@selector(windowWillClose:) 
+					  name:NSWindowWillCloseNotification
+					object:[self window]];
+
   return self;
+}
+
+- (void) windowWillClose:(NSNotification*) note {
+  if ([note object] == [self window]) {
+    [self destroyXWindow];
+  }
 }
 
 - (void) viewDidMoveToWindow {
   if ([self window]) {
-    if (xwindowid == 0) {
-      [[NSNotificationCenter defaultCenter] addObserver:self 
-                                              selector:@selector(deactivateXWindow) 
-                                                  name:NSWindowDidResignKeyNotification
-                                                object:[self window]];
-                                               
-      [[NSNotificationCenter defaultCenter] addObserver:self 
-                                              selector:@selector(destroyXWindow) 
-                                                  name:NSWindowWillCloseNotification
-                                                object:[self window]];
-                                                
+    if (xwindowid == 0) {                         
       NSInteger xwinid = [self createXWindowID];
       if (xwinid) {
         [self remapXWindow:xwinid];
@@ -122,8 +144,14 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (void) destroyXWindow {
-  xwindowid = 0;
+  if (!xdisplay || !xwindowid) return;
+
+  XDestroyWindow(xdisplay, xwindowid);
+  XSync(xdisplay, True);
   xdisplay = NULL;
+  xwindowid = 0;
+  
+  NSLog(@"destroy");
 }
 
 - (void) activateXWindow {
@@ -209,14 +237,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 */
 
 - (void) unmapXWindow {
-  if (!xdisplay || !xwindowid) return;
-
-  XDestroyWindow(xdisplay, xwindowid);
-  XSync(xdisplay, True);
-  xdisplay = NULL;
-  xwindowid = 0;
-  
-  NSLog(@"UNMAP");
 }
 
 - (void) remapXWindow:(Window) xwinid {  
@@ -233,11 +253,21 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   [self performSelector:@selector(resizeXWindow) withObject:nil afterDelay:0.1];
 }
 
-- (Window) findXWindowID {
+- (Window) findXWindowID:(NSString*) name {
   Display* dpy = XOpenDisplay(NULL);
   Window rootWindow = XDefaultRootWindow(dpy);
-  Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, "crx_pfoejeibpefedaclnglndmelhlbjmipa");
+  Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, [name UTF8String]);
   return foundWindow;
+}
+
+- (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  if (xwindowid != 0) {
+    [self unmapXWindow];
+    [self destroyXWindow];
+  }
+
+  [super dealloc];
 }
 
 @end

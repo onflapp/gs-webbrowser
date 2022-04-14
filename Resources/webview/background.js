@@ -1,12 +1,12 @@
 chrome.app.runtime.onLaunched.addListener(function(evt) {
   var nm = evt.items[0].entry.name;
   var a = nm.split('.');
-  window.myport = Number.parseInt(a[2]);
+  window.myport = Number.parseInt(a[0]);
 
   chrome.app.window.create('window.html#'+window.myport, {
     innerBounds: {
-      width: 300,
-      height: 300
+      width: 1,
+      height: 1
     }
   }, 
   function(win) {
@@ -57,6 +57,9 @@ function connectController() {
       i = buffer.indexOf('\n');
     }
   });
+  chrome.sockets.tcp.onReceiveError.addListener(function(info) {
+    console.log(info);
+  });
 }
 
 function receiveCommand(cmd) {
@@ -67,7 +70,7 @@ function receiveCommand(cmd) {
 
 function sendCommand(cmd) {
   var buff = str2ab(cmd+'\n');
-  chrome.sockets.tcp.send(window.mysocketid, buff, function() {
+  chrome.sockets.tcp.send(window.mysocketid, buff, function(ex) {
     console.log('sent');
   });
 }

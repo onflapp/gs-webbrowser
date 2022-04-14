@@ -40,8 +40,8 @@
   NSString* val = [cmd substringFromIndex:r.location+1];
   
   if ([nm isEqual:@"ON_READY"]) {
-    NSLog(@"ready");
-    Window w = [self findXWindowID];
+    NSLog(@"ready: %@", val);
+    Window w = [self findXWindowID:val];
     [self remapXWindow:w];
   }
   if ([nm isEqual:@"ON_FOCUS"]) {

@@ -37,7 +37,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
 }
 
 - (Window) createXWindowID;
-- (Window) findXWindowID;
+- (Window) findXWindowID:(NSString*) name;
+- (void) windowWillClose:(NSNotification*) note;
 - (void) destroyXWindow;
 - (void) activateXWindow;
 - (void) deactivateXWindow;

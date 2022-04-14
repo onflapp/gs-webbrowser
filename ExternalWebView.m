@@ -31,6 +31,7 @@
   int sock, reuse = 1;
   int port = 0;
   struct sockaddr_in sockaddr;
+  socklen_t socklen = sizeof(sockaddr);
 
   buff = [NSMutableString new];
 
@@ -45,8 +46,11 @@
   else if(bind(sock, (struct sockaddr*)&sockaddr, sizeof(sockaddr)))
     NSLog(@"Couldn't bind to port %d - %s\n", port, strerror(errno));
   else if(listen(sock, 5) == -1)
-    NSLog(@"Couldn't listen - %s\n", port, strerror(errno));
+    NSLog(@"Couldn't listen %d - %s\n", port, strerror(errno));
+  else if (getsockname(sock, (struct sockaddr*)& sockaddr, &socklen) == -1)
+    NSLog(@"Couldn't get name %s\n", strerror(errno));
   else {
+    listener_port = GSSwapBigI16ToHost(sockaddr.sin_port);
     listener = [[NSFileHandle alloc] initWithFileDescriptor:sock closeOnDealloc:YES];
     [[NSNotificationCenter defaultCenter]
 	    addObserver: self
@@ -58,11 +62,9 @@
 }
 
 - (void) stopController {
-  //[listener closeFile];
   [listener release];
   listener = nil;
 
-  //[remote closeFile];
   [remote release];
   remote = nil;
 }
