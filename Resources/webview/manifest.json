@@ -5,7 +5,7 @@
   "manifest_version": 2,
   "permissions": [
     "webview",
-    {"fileSystem": ["read"]}
+    {"fileSystem": ["read", "write"]}
   ],
   "offline_enabled": true,
   "file_handlers": {
@@ -18,7 +18,7 @@
       "connect": ""
     },
     "tcpServer": {
-      "listen": ":2222"
+      "listen": ":"
     }
   },
   "app": {

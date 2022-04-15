@@ -30,14 +30,12 @@
 
 @interface ExternalWebView : XEmbeddedView
 {
-  NSFileHandle* listener;
   NSFileHandle* remote;
   NSMutableString* buff;
-  NSInteger listener_port;
 }
 
-- (void) startController;
-- (void) stopController;
+- (void) connectController;
+- (void) disconnectController;
 - (void) sendCommand:(NSString*) cmd;
 @end
 

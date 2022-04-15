@@ -3,6 +3,7 @@
 
 #import <AppKit/AppKit.h>
 #import "ExternalWebView.h"
+#import "ChromeController.h"
 
 @protocol ChromeWebViewDelegate
 

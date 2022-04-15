@@ -1,0 +1,5 @@
+@interface ChromeController : NSObject {
+}
+
+@end
+

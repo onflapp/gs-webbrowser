@@ -27,7 +27,8 @@
 
 @implementation ExternalWebView
 
-- (void) startController {
+- (void) connectController {
+/*
   int sock, reuse = 1;
   int port = 0;
   struct sockaddr_in sockaddr;
@@ -59,12 +60,19 @@
 	    object: listener];
     [listener acceptConnectionInBackgroundAndNotify];
   }
+*/
+  [self performSelector:@selector(xxx) withObject:nil afterDelay:5.0];
 }
 
-- (void) stopController {
-  [listener release];
-  listener = nil;
+- (void) xxx {
+  remote = [NSFileHandle fileHandleAsClientAtAddress:@"localhost" service:@"2222" protocol:@"tcp"];
+  NSLog(@">>>> %@", remote);
+  [remote retain];
+  [remote readInBackgroundAndNotify];
+  [self sendCommand:@"HELLO:"];
+}
 
+- (void) disconnectController {
   [remote release];
   remote = nil;
 }
@@ -81,23 +89,6 @@
 
 - (void) receiveCommand:(NSString*) cmd {
   NSLog(@"command: %@", cmd);
-}
-
-- (void) acceptConnection:(id) not {
-
-  if (!remote) [remote release];
-  remote = [[not userInfo] objectForKey: NSFileHandleNotificationFileHandleItem];
-  [remote retain];
-  
-  [[NSNotificationCenter defaultCenter]
-	    addObserver: self
-	    selector: @selector(handleDataOnConnection:)
-	    name: NSFileHandleReadCompletionNotification
-	    object: remote];
-
-  [remote readInBackgroundAndNotify];
-  [listener acceptConnectionInBackgroundAndNotify];
-  [self sendCommand:@"HELLO:"];
 }
 
 - (void) handleDataOnConnection:(id) not {

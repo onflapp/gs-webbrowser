@@ -1,12 +1,23 @@
+var DEBUG = 0;
+var PORT = 0;
+
 chrome.app.runtime.onLaunched.addListener(function(evt) {
-  //var nm = evt.items[0].entry.name;
-  chrome.app.window.create('info.html', {
-    innerBounds: {
-      width: 200,
-      height: 200
-    }
+  window.mypidfile = evt.items[0].entry;
+  if (DEBUG) {
+    chrome.app.window.create('info.html', {
+      innerBounds: {
+        width: 200,
+        height: 200
+      }
+    });
+  }
+  startServer(PORT);
+});
+
+
+chrome.runtime.onSuspend.addListener(function(evt) {
+  window.mypidfile.remove(function(rv) {
   });
-  startServer(2222);
 });
 
 function DataConnection(sockId) {
@@ -69,7 +80,17 @@ function startServer(port) {
 
   chrome.sockets.tcpServer.create({}, function(info) {
     chrome.sockets.tcpServer.listen(info.socketId, '127.0.0.1', port, function(result) {
-      console.log('listen:' + result);
+      console.log(info);
+      chrome.sockets.tcpServer.getInfo(info.socketId, function(r) {
+        window.myport = r.localPort;
+        console.log('listen:' + window.myport);
+	window.mypidfile.createWriter(function(w) {
+          waitForIO(w, function() {
+            var b = new Blob([''+window.myport+'\n'], {type:'text/plain'});
+            w.write(b);
+	  });
+	});
+      });
    });
   });
 
@@ -120,4 +141,23 @@ function str2ab(str) {
   return buf;
 }
 
-
+function waitForIO(writer, callback) {
+  // set a watchdog to avoid eventual locking:
+  var start = Date.now();
+  // wait for a few seconds
+  var reentrant = function() {
+    if (writer.readyState===writer.WRITING && Date.now()-start<4000) {
+      setTimeout(reentrant, 100);
+      return;
+    }
+    if (writer.readyState===writer.WRITING) {
+      console.error("Write operation taking too long, aborting!"+
+        " (current writer readyState is "+writer.readyState+")");
+      writer.abort();
+    } 
+    else {
+      callback();
+    }
+  };
+  setTimeout(reentrant, 100);
+}
