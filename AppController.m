@@ -41,28 +41,23 @@
   [super dealloc];
 }
 
-- (void) awakeFromNib
-{
+- (void) awakeFromNib {
 }
 
-- (void) applicationDidFinishLaunching: (NSNotification *)aNotif
-{
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotif {
   [NSApp setServicesProvider:self];
 }
 
-- (BOOL) applicationShouldTerminate: (id)sender
-{
+- (BOOL) applicationShouldTerminate:(id)sender {
   return YES;
 }
 
-- (void) applicationWillTerminate: (NSNotification *)aNotif
-{
+- (void) applicationWillTerminate:(NSNotification *)aNotif {
 }
 
 - (void)searchSelectionService:(NSPasteboard *)pboard
                       userData:(NSString *)userData
-                         error:(NSString **)error 
-{
+                         error:(NSString **)error {
   NSString *text = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"]];
 
   if ([text length] > 0 && [MYConfig valueForKey:@"SEARCH_ADDRESS"]) {
@@ -77,8 +72,7 @@
 
 - (void)openLocationService:(NSPasteboard *)pboard
                      userData:(NSString *)userData
-                        error:(NSString **)error 
-{
+                        error:(NSString **)error  {
   NSString *path = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"]];
 
   if (path) {
@@ -87,8 +81,7 @@
 }
 
 - (BOOL) application: (NSApplication *)application
-            openFile: (NSString *)fileName
-{
+            openFile: (NSString *)fileName {
   NSURL* url = nil;
   if ([fileName hasPrefix:@"http"] || [fileName hasPrefix:@"file"]) {
     url = [NSURL URLWithString:fileName];

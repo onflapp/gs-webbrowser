@@ -142,7 +142,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   }
   else {
     if (xwindowid != 0) {
-      [[NSNotificationCenter defaultCenter] removeObserver:self];
       [self unmapXWindow];
       [self destroyXWindow];
     }
@@ -154,14 +153,13 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (void) destroyXWindow {
-  if (!xdisplay || !xwindowid) return;
-
-  XDestroyWindow(xdisplay, xwindowid);
-  XSync(xdisplay, True);
-  xdisplay = NULL;
-  xwindowid = 0;
-  
-  NSLog(@"destroy");
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  if (xdisplay && xwindowid) {
+    XDestroyWindow(xdisplay, xwindowid);
+    XSync(xdisplay, True);
+    xdisplay = NULL;
+    xwindowid = 0;
+  }
 }
 
 - (void) activateXWindow {

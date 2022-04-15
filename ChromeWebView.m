@@ -5,14 +5,19 @@
 
 - (id) initWithFrame:(NSRect)r {
   self = [super initWithFrame:r];  
+  
   chromeController = [[ChromeController alloc]init];
   [chromeController ensureChromeControllerIsReady:self];
+
   return self;
 }
 
 - (void) dealloc {
   [chromeController release];
   chromeController = nil;
+
+  [initialURL release];
+  initialURL = nil;
 
   [super dealloc];
 }
@@ -22,7 +27,12 @@
 }
 
 - (void) destroyXWindow {
-  NSLog(@"destroy");
+  [chromeController stopTrying];
+  [chromeController release];
+  chromeController = nil;
+
+  ready = NO;
+
   [self disconnectController];
   [super destroyXWindow];
 }
@@ -35,7 +45,16 @@
   if ([nm isEqual:@"ON_READY"]) {
     NSLog(@"ready: %@", val);
     Window w = [self findXWindowID:val];
-    [self remapXWindow:w];
+    if (w) {
+      [self remapXWindow:w];
+      ready = YES;
+
+      if (initialURL) {
+        [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", initialURL]];
+        [initialURL release];
+        initialURL = nil;
+      }
+    }
   }
   if ([nm isEqual:@"ON_FOCUS"]) {
     NSLog(@"focus");
@@ -61,12 +80,15 @@
 - (void) loadURL:(NSURL*) url {
   if (!url) return;
 
-  [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", url]];
+  if (ready) [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", url]];
+  else {
+    [initialURL release];
+    initialURL = [url retain];
+  }
 }
 
 - (id)validRequestorForSendType:(NSString *)st
-                     returnType:(NSString *)rt 
-{
+                     returnType:(NSString *)rt {
   if ([st isEqual:NSStringPboardType])
     return self;
   else

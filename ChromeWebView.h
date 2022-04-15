@@ -16,6 +16,8 @@
 @interface ChromeWebView : ExternalWebView {
   IBOutlet id delegate;
   ChromeController* chromeController;
+  BOOL ready;
+  NSURL* initialURL;
 }
 
 - (void) setDelegate:(id) del;

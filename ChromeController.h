@@ -9,9 +9,11 @@
 
 @interface ChromeController : NSObject {
   NSString* pidfile;
+  BOOL running;
 }
 
 - (void) ensureChromeControllerIsReady:(ChromeControllerDelegate*) del;
+- (void) stopTrying;
 
 @end
 

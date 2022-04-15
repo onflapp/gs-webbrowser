@@ -6,6 +6,7 @@
   self = [super init];
   NSString* config = [NSStandardLibraryPaths() firstObject];
   
+  running = YES;
   pidfile = [config stringByAppendingPathComponent:@"WebBrowser/controller.pid"];
   [pidfile retain];
   
@@ -15,21 +16,16 @@
 - (void) dealloc {
   [pidfile release];
   pidfile = nil;
+  running = NO;
 
   [super dealloc];
 }
 
-
 - (void) ensureChromeControllerIsReady:(ChromeControllerDelegate*) del {
-  if (!pidfile) return;
+  if (!pidfile || !running) return;
 
   NSInteger p = [self processPort];
-  if (p == -1) {
-    [self launchProcess];
-    NSLog(@"try again");
-    [self performSelector:@selector(ensureChromeControllerIsReady:) withObject: del afterDelay:1.0];
-  }
-  else if (p > 0) {
+  if (p > 0) {
     NSLog(@"try to connect to %d", p);
     NSFileHandle* remote = [NSFileHandle fileHandleAsClientAtAddress:@"localhost" service:[NSString stringWithFormat:@"%ld", p] protocol:@"tcp"];
     if (remote) {
@@ -42,15 +38,24 @@
       [self performSelector:@selector(ensureChromeControllerIsReady:) withObject: del afterDelay:1.0];
     }
   }
+  else {
+    [self launchProcess];
+    NSLog(@"try again");
+    [self performSelector:@selector(ensureChromeControllerIsReady:) withObject: del afterDelay:1.0];
+  }
 }
 
 - (NSInteger) processPort {
   NSString* str = [NSString stringWithContentsOfFile:pidfile];
-  NSLog(@">>>> %@ %@", pidfile, str);
+  NSLog(@">>>> %@ [%@]", pidfile, str);
   if (!str) return -1;
   else {
     return [str integerValue];
   } 
+}
+
+- (void) stopTrying {
+  running = NO;
 }
 
 - (void) launchProcess {
@@ -58,7 +63,7 @@
   NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];
 
   NSTask* task = [[NSTask alloc] init];
-  [task setLaunchPath:@"/bin/sh"];
+  [task setLaunchPath:@"/bin/bash"];
   [task setArguments:[NSArray arrayWithObjects:path, nil]];
   [task setCurrentDirectoryPath:wp];
 
