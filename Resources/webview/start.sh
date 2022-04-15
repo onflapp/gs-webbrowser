@@ -13,6 +13,7 @@ if [ -z "$CHROME" ];then
 fi
 
 DDIR="$HOME/Library/WebBrowser/Profile"
+WDIR="$HOME/Library/WebBrowser/webview.tmp"
 PIDF="$HOME/Library/WebBrowser/controller.pid"
 LOCK="/tmp/$UID-WebBrowser-controller.lock"
 
@@ -22,11 +23,15 @@ if [ -f "$LOCK" ];then
 fi
 
 mkdir -p "$DDIR"
+mkdir -p "$WDIR"
+
+cp ./* "$WDIR/"
 
 touch "$DDIR/First Run"
 echo "" > "$PIDF"
 echo "" > "$LOCK"
 
+cd "$WDIR"
 "$CHROME" --user-data-dir=$DDIR --silent-launch --load-and-launch-app=`pwd` "$PIDF"
 
 sleep 5
