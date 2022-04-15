@@ -1,28 +1,111 @@
 chrome.app.runtime.onLaunched.addListener(function(evt) {
-  var nm = evt.items[0].entry.name;
-  var a = nm.split('.');
-  window.myport = Number.parseInt(a[0]);
-
-  chrome.app.window.create('window.html#'+window.myport, {
+  //var nm = evt.items[0].entry.name;
+  chrome.app.window.create('info.html', {
     innerBounds: {
-      left: -10,
-      top: -10,
-      width: 5,
-      height: 5
+      width: 200,
+      height: 200
+    }
+  });
+  startServer(2222);
+});
+
+function DataConnection(sockId) {
+  var that = this;
+  this.buffer = '';
+  this.clientSocketId = sockId;
+  this.receiveData = function(data) {
+    var v = ab2str(data);
+    that.buffer += v;
+
+    var i = that.buffer.indexOf('\n');
+    while (i > 0) {
+      var s = that.buffer.substr(0, i);
+      that.receiveCommand(s);
+      that.buffer = that.buffer.substr(i+1);
+      i = that.buffer.indexOf('\n');
+    }
+  };
+
+  this.receiveCommand = function(cmd) {
+    console.log('received: ' + cmd);
+    var cw = that.win.contentWindow;
+    cw.postMessage(cmd);
+  };
+
+  this.sendCommand = function(cmd) {
+    var buff = str2ab(cmd+'\n');
+    chrome.sockets.tcp.send(that.clientSocketId, buff, function(ex) {
+      console.log('sent');
+    });
+  };
+}
+
+function startServer(port) {
+  connections = {};
+
+  chrome.sockets.tcpServer.onAccept.addListener(function(evt) {
+    var con = new DataConnection(evt.clientSocketId);
+    connections['x'+evt.clientSocketId] = con;
+    createWindow(con);
+  });
+
+  chrome.sockets.tcp.onReceive.addListener(function(info) {
+    var con = connections['x'+info.socketId];
+    if (con) {
+      con.receiveData(info.data);
+    }
+  });
+
+  chrome.sockets.tcp.onReceiveError.addListener(function(info) {
+    var sock = info.socketId;
+    var con = connections['x'+sock];
+    if (con) {
+      con.win.close();
+      delete connections['x'+sock];
+    }
+      
+    console.log('error');
+  });
+
+  chrome.sockets.tcpServer.create({}, function(info) {
+    chrome.sockets.tcpServer.listen(info.socketId, '127.0.0.1', port, function(result) {
+      console.log('listen:' + result);
+   });
+  });
+
+  chrome.runtime.onMessage.addListener(function(msg, sender, reponse) {
+    console.log('message:' + msg);
+    var i = sender.url.indexOf('#');
+    if (i > 0) {
+      var wid = 'x'+sender.url.substr(i+1);
+      var con = connections[wid];
+      if (con) {
+        con.sendCommand(msg);
+      }
+    }
+    return true;
+  });
+}
+
+function createWindow(con) {
+  var x = 100;
+  var y = 100;
+  var w = 300;
+  var h = 300;
+  chrome.app.window.create('window.html#'+con.clientSocketId, {
+    innerBounds: {
+      left: x,
+      top: y,
+      width: w,
+      height: h
     }
   }, 
   function(win) {
-    window.myappwindow = win;
     console.log('started');
-    connectController();
+    con.win = win;
+    chrome.sockets.tcp.setPaused(con.clientSocketId, false);
   });
-});
-
-chrome.runtime.onMessage.addListener(function(msg, sender, reponse) {
-  console.log('message:' + msg);
-  sendCommand(msg);
-  return true;
-});
+}
 
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
@@ -37,42 +120,4 @@ function str2ab(str) {
   return buf;
 }
 
-function connectController() {
-  var buffer = '';
 
-  chrome.sockets.tcp.create({}, function(createInfo) {
-    chrome.sockets.tcp.connect(createInfo.socketId, 'localhost', window.myport, function() {
-      console.log('connected');
-      window.mysocketid = createInfo.socketId;
-    });
-  });
-  chrome.sockets.tcp.onReceive.addListener(function(info) {
-    if (info.socketId != window.mysocketid) return;
-    var v = ab2str(info.data);
-    buffer += v;
-
-    var i = buffer.indexOf('\n');
-    while (i > 0) {
-      var s = buffer.substr(0, i);
-      receiveCommand(s);
-      buffer = buffer.substr(i+1);
-      i = buffer.indexOf('\n');
-    }
-  });
-  chrome.sockets.tcp.onReceiveError.addListener(function(info) {
-    console.log(info);
-  });
-}
-
-function receiveCommand(cmd) {
-  console.log('received: ' + cmd);
-  var win = window.myappwindow.contentWindow;
-  win.postMessage(cmd);
-}
-
-function sendCommand(cmd) {
-  var buff = str2ab(cmd+'\n');
-  chrome.sockets.tcp.send(window.mysocketid, buff, function(ex) {
-    console.log('sent');
-  });
-}

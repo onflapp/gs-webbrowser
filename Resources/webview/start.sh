@@ -1,15 +1,9 @@
 #!/bin/bash
 
-CHROME=/usr/bin/google-chrome
 CHROME=/snap/bin/chromium
-TDIR="$HOME/Library/WebBrowser/webview.$$"
-PFILE="$TDIR/$1.pid"
+CHROME=/usr/bin/google-chrome
+DDIR="$HOME/Library/WebBrowser/Profile"
+mkdir -p "$DDIR"
 
-mkdir -p "$TDIR"
-cp * "$TDIR"
-
-touch "$PFILE"
-cd "$TDIR"
-"$CHROME" --silent-launch --load-and-launch-app=`pwd` "$PFILE"
-sleep 5
-rm -R "$TDIR"
+#"$CHROME" --user-data-dir=$DDIR --silent-launch --load-and-launch-app=`pwd`
+"$CHROME" --silent-launch --load-and-launch-app=`pwd`

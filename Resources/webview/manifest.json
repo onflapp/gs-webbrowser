@@ -5,10 +5,8 @@
   "manifest_version": 2,
   "permissions": [
     "webview",
-    {"fileSystem": ["retainEntries"]}
+    {"fileSystem": ["read"]}
   ],
-  "kiosk_eabled": true,
-  "kiosk_only": true,
   "offline_enabled": true,
   "file_handlers": {
     "any": {
@@ -18,6 +16,9 @@
   "sockets": {
     "tcp": {
       "connect": ""
+    },
+    "tcpServer": {
+      "listen": ":2222"
     }
   },
   "app": {
