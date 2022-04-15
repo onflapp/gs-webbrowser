@@ -27,7 +27,13 @@
 
 @implementation ExternalWebView
 
-- (void) connectController {
+- (void) dealloc {
+  [self disconnectController];
+
+  [super dealloc];
+}
+
+- (void) connectController:(NSFileHandle*) fh {
 /*
   int sock, reuse = 1;
   int port = 0;
@@ -61,20 +67,26 @@
     [listener acceptConnectionInBackgroundAndNotify];
   }
 */
-  [self performSelector:@selector(xxx) withObject:nil afterDelay:5.0];
-}
+  [self disconnectController];
 
-- (void) xxx {
-  remote = [NSFileHandle fileHandleAsClientAtAddress:@"localhost" service:@"2222" protocol:@"tcp"];
-  NSLog(@">>>> %@", remote);
-  [remote retain];
+  [[NSNotificationCenter defaultCenter]
+	    addObserver: self
+	    selector: @selector(handleDataOnConnection:)
+	    name: NSFileHandleReadCompletionNotification
+	    object: fh];
+
+  remote = [fh retain];
   [remote readInBackgroundAndNotify];
   [self sendCommand:@"HELLO:"];
 }
 
 - (void) disconnectController {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   [remote release];
   remote = nil;
+
+  [buff release];
+  buff = [NSMutableString new];
 }
 
 - (Window) createXWindowID {
@@ -110,10 +122,7 @@
     [remote readInBackgroundAndNotify];
   }
   else {
-    [remote release];
-    [buff release];
-    buff = nil;
-    remote = nil;
+    [self disconnectController];
   }
 }
 

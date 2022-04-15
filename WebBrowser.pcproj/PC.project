@@ -19,7 +19,8 @@
 	"common.m",
 	"XEmbeddedView.m",
 	"ChromeWebView.m",
-	"ExternalWebView.m"
+	"ExternalWebView.m",
+	"ChromeController.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -36,7 +37,8 @@
 	"XEmbeddedView.h",
 	"xembed.h",
 	"ChromeWebView.h",
-	"ExternalWebView.h"
+	"ExternalWebView.h",
+	"ChromeController.h"
     );
     IMAGES = (
 	"Home.tiff",

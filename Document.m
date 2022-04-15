@@ -47,6 +47,10 @@
   return self;
 }
 
+- (void) dealloc {
+  [super dealloc];
+}
+
 - (void) goHome:(id) sender {
   NSURL* url = [NSURL URLWithString:[MYConfig valueForKey:@"HOME_ADDRESS"]];
   

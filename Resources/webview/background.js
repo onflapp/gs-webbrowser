@@ -14,11 +14,12 @@ chrome.app.runtime.onLaunched.addListener(function(evt) {
   startServer(PORT);
 });
 
-
+/*
 chrome.runtime.onSuspend.addListener(function(evt) {
   window.mypidfile.remove(function(rv) {
   });
 });
+*/
 
 function DataConnection(sockId) {
   var that = this;
@@ -109,10 +110,16 @@ function startServer(port) {
 }
 
 function createWindow(con) {
-  var x = 100;
-  var y = 100;
-  var w = 300;
-  var h = 300;
+  var x = -10;
+  var y = -10;
+  var w = 5;
+  var h = 5;
+  if (DEBUG) {
+    x = 100;
+    y = 100;
+    w = 300;
+    h = 300;
+  }
   chrome.app.window.create('window.html#'+con.clientSocketId, {
     innerBounds: {
       left: x,

@@ -58,7 +58,8 @@ common.h \
 XEmbeddedView.h \
 xembed.h \
 ChromeWebView.h \
-ExternalWebView.h
+ExternalWebView.h \
+ChromeController.h
 
 #
 # Objective-C Class files
@@ -70,7 +71,8 @@ Preferences.m \
 common.m \
 XEmbeddedView.m \
 ChromeWebView.m \
-ExternalWebView.m
+ExternalWebView.m \
+ChromeController.m
 
 #
 # Other sources

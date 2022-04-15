@@ -115,6 +115,16 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   return self;
 }
 
+- (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  if (xwindowid != 0) {
+    [self unmapXWindow];
+    [self destroyXWindow];
+  }
+
+  [super dealloc];
+}
+
 - (void) windowWillClose:(NSNotification*) note {
   if ([note object] == [self window]) {
     [self destroyXWindow];
@@ -258,16 +268,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   Window rootWindow = XDefaultRootWindow(dpy);
   Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, [name UTF8String]);
   return foundWindow;
-}
-
-- (void) dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-  if (xwindowid != 0) {
-    [self unmapXWindow];
-    [self destroyXWindow];
-  }
-
-  [super dealloc];
 }
 
 @end

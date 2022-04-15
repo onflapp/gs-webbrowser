@@ -22,8 +22,8 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#ifndef _WEBVIEW_H_
-#define _WEBVIEW_H_
+#ifndef _EXTERNALWEBVIEW_H_
+#define _EXTERNALWEBVIEW_H_
 
 #import <AppKit/AppKit.h>
 #import "XEmbeddedView.h"
@@ -34,10 +34,10 @@
   NSMutableString* buff;
 }
 
-- (void) connectController;
+- (void) connectController:(NSFileHandle*) fh;
 - (void) disconnectController;
 - (void) sendCommand:(NSString*) cmd;
 @end
 
-#endif // _WEBVIEW_H_
+#endif // _EXTERNALWEBVIEW_H_
 

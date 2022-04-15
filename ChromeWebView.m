@@ -5,13 +5,20 @@
 
 - (id) initWithFrame:(NSRect)r {
   self = [super initWithFrame:r];  
-  [self connectController];
-
+  chromeController = [[ChromeController alloc]init];
+  [chromeController ensureChromeControllerIsReady:self];
   return self;
 }
 
 - (void) dealloc {
+  [chromeController release];
+  chromeController = nil;
+
   [super dealloc];
+}
+
+- (void) chromeController:(id) controller isReady:(NSFileHandle*) fh {
+  [self connectController:fh];
 }
 
 - (void) destroyXWindow {
