@@ -1,5 +1,10 @@
 window.addEventListener('message', function(evt) {
-  receiveCommand(evt.data);
+  if (evt.origin.indexOf('chrome-extension://') == 0) {
+    receiveCommand(evt.data);
+  }
+  else {
+    sendCommand(evt.data);
+  }
 });
 
 window.addEventListener('click', function(evt) {
@@ -22,14 +27,33 @@ window.addEventListener('load', function(evt) {
   });
   wv.addEventListener('contentload', function(evt) {
   });
-  wv.addEventListener('newwindow', function(evt) {
+  wv.addEventListener('message', function(evt) {
     console.log(evt);
+  });
+  wv.addEventListener('newwindow', function(evt) {
+    sendCommand('ON_NEW_WINDOW:'+evt.targetUrl);
+    evt.preventDefault();
   });
   wv.addEventListener('permissionrequest', function(evt) {
     if (evt.permission === 'download') {
       evt.request.allow();
     }
     console.log(evt);
+  });
+  wv.addEventListener('contentload', function(evt) {
+    this.executeScript({
+      code: 
+      'window.addEventListener("message", function(e) {' +
+        'if (e.data == "init") {' +
+          'window.addEventListener("click", function(evt) { ' +
+            'e.source.postMessage("ON_FOCUS:", "*"); ' +
+          '});' +
+        '}' +
+      '})'
+    });
+    setTimeout(function() {
+        wv.contentWindow.postMessage('init', '*');
+    },200);
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);
@@ -71,5 +95,14 @@ CMD = {
   },
   'RELOAD': function(val) {
     window.mywebview.reload();
+  },
+  'COPY': function(val) {
+    window.mywebview.executeScript({code:'document.execCommand("copy")'});
+  },
+  'PASTE': function(val) {
+    window.mywebview.executeScript({code:'document.execCommand("paste")'});
+  },
+  'SELECTALL': function(val) {
+    window.mywebview.executeScript({code:'document.execCommand("selectall")'});
   }
 };

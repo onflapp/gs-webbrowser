@@ -67,6 +67,9 @@
   if ([nm isEqual:@"ON_LOADING_STOP"]) {
     [delegate webView:self didFinishLoading:[NSURL URLWithString:val]];
   }
+  if ([nm isEqual:@"ON_NEW_WINDOW"]) {
+    [[NSApp delegate] application:NSApp openFile:val];
+  }
 }
 
 - (void) setDelegate:(id) del {
@@ -111,15 +114,19 @@
 }
 
 - (void) copy:(id)sender {
+  [self sendCommand:@"COPY"];
 }
 
 - (void) cut:(id)sender {
+  [self sendCommand:@"CUT"];
 }
 
 - (void) paste:(id)sender {
+  [self sendCommand:@"PASTE"];
 }
 
 - (void) selectAll:(id)sender {
+  [self sendCommand:@"SELECTALL"];
 }
 
 - (void) undo:(id)sender {
@@ -132,7 +139,6 @@
 }
 
 - (void) goBack:(id) sender {
-NSLog(@"back");
   [self sendCommand:@"BACK"];
 }
 

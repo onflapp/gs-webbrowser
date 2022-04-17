@@ -125,6 +125,36 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   [super dealloc];
 }
 
+/*
+- (void) processXWindowsEvents:(id) sender {
+  Display *d;
+  Window w;
+  XEvent e;
+  int s;
+ 
+  d = XOpenDisplay(NULL);
+  s = DefaultScreen(d);
+  w = XCreateSimpleWindow(d, [sender embededXWindowID], 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
+  XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask);
+  XMapWindow(d, w);
+ 
+  NSLog(@"start");
+  while (1) {
+    XNextEvent(d, &e);
+    NSLog(@"e");
+    if (e.type == Expose) {
+    }
+    if (e.type == ButtonPress) {
+      [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+      NSLog(@"m");
+    }
+  }
+ 
+  XCloseDisplay(d);
+  NSLog(@"end");
+}
+*/
+
 - (void) windowWillClose:(NSNotification*) note {
   if ([note object] == [self window]) {
     [self destroyXWindow];
@@ -218,6 +248,10 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSLog(@"resized");
 }
 
+- (Window) embededXWindowID {
+  return xwindowid;
+}
+
 - (NSRect) convertToNativeWindowRect {
   NSRect r = [self bounds];
   NSView* sv = [self superview];
@@ -259,6 +293,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSLog(@"mmmm %x - %x:", xwindowid, myxwindowid);
   
   [self performSelector:@selector(resizeXWindow) withObject:nil afterDelay:0.1];
+  //[self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
 }
 
 - (Window) findXWindowID:(NSString*) name {

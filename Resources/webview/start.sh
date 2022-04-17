@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function cleanup {
+  rm "$LOCK" 2>/dev/null
+}
+
+trap cleanup SIGINT SIGTERM
+
 CHROME=`type -p google-chrome`
 if [ -z "$CHROME" ];then
   CHROME=`type -p chromium`
@@ -34,5 +40,5 @@ echo "" > "$LOCK"
 cd "$WDIR"
 "$CHROME" --user-data-dir=$DDIR --silent-launch --load-and-launch-app=`pwd` "$PIDF"
 
-sleep 5
-rm "$LOCK" 2>/dev/null
+sleep 3
+cleanup

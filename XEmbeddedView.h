@@ -44,6 +44,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
 - (void) deactivateXWindow;
 - (void) remapXWindow:(Window)xwinid;
 
+- (Window) embededXWindowID;
+
 @end
 
 #endif // _XEMBEDDEDVIEW_H_

@@ -13,8 +13,7 @@
 
 @implementation AppController
 
-+ (void) initialize
-{
++ (void) initialize {
   NSMutableDictionary* defaults = [NSMutableDictionary dictionary];
   NSMutableDictionary* webview = [NSMutableDictionary dictionary];
   
@@ -28,16 +27,13 @@
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (id) init
-{
-  if ((self = [super init]))
-    {
-    }
+- (id) init {
+  if ((self = [super init])) {
+  }
   return self;
 }
 
-- (void) dealloc
-{
+- (void) dealloc {
   [super dealloc];
 }
 
@@ -55,9 +51,9 @@
 - (void) applicationWillTerminate:(NSNotification *)aNotif {
 }
 
-- (void)searchSelectionService:(NSPasteboard *)pboard
-                      userData:(NSString *)userData
-                         error:(NSString **)error {
+- (void) searchSelectionService:(NSPasteboard *)pboard
+                       userData:(NSString *)userData
+                          error:(NSString **)error {
   NSString *text = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"]];
 
   if ([text length] > 0 && [MYConfig valueForKey:@"SEARCH_ADDRESS"]) {
@@ -98,16 +94,14 @@
   return NO;
 }
 
-- (void) showPrefPanel: (id)sender
-{
+- (void) showPrefPanel: (id)sender {
   if (!preferences) {
     preferences = [[Preferences alloc] init];
   }
   [preferences show:sender];
 }
 
-- (void) newDocument: (id)sender
-{
+- (void) newDocument: (id)sender {
   Document *doc = [[Document alloc] init];
 }
 
