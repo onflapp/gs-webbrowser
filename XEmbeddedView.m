@@ -125,35 +125,47 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   [super dealloc];
 }
 
-/*
 - (void) processXWindowsEvents:(id) sender {
+  Window ws = (Window)[[sender window]windowRef];
+  Window we = (Window)[sender embededXWindowID];
   Display *d;
-  Window w;
   XEvent e;
   int s;
  
   d = XOpenDisplay(NULL);
   s = DefaultScreen(d);
-  w = XCreateSimpleWindow(d, [sender embededXWindowID], 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
-  XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask);
-  XMapWindow(d, w);
- 
+
+  //w = XCreateSimpleWindow(d, ws, 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
+  //XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask);
+  //XMapWindow(d, w);
+
   NSLog(@"start");
+  XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask | ButtonReleaseMask, GrabModeAsync, GrabModeAsync, None, None);
+  XGrabKeyboard(d, ws, 1, GrabModeAsync, GrabModeAsync, CurrentTime);
+  XSync(d, True);
+
   while (1) {
     XNextEvent(d, &e);
     NSLog(@"e");
     if (e.type == Expose) {
     }
-    if (e.type == ButtonPress) {
+    if (e.type == ButtonPress || e.type == ButtonRelease) {
       [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+      XSendEvent(d, we, False, NoEventMask, &e);
+      XFlush(d);
       NSLog(@"m");
+    }
+    if (e.type == KeyPress || e.type == KeyRelease) {
+      XSendEvent(d, ws, False, NoEventMask, &e);
+      XFlush(d);
     }
   }
  
+  XUngrabKeyboard(d, CurrentTime);
+  XUngrabButton(d, AnyButton, AnyModifier, we);
   XCloseDisplay(d);
   NSLog(@"end");
 }
-*/
 
 - (void) windowWillClose:(NSNotification*) note {
   if ([note object] == [self window]) {
@@ -210,6 +222,12 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
 - (BOOL) acceptsFirstResponder {
     return YES;
+}
+
+- (void) xxx {
+  //Window myxwindowid = (Window)[[self window]windowRef];
+//XSetInputFocus(xdisplay, xwindowid, RevertToNone, CurrentTime);
+//XFlush(xdisplay);
 }
 
 - (BOOL) becomeFirstResponder {

@@ -58,8 +58,9 @@
   }
   if ([nm isEqual:@"ON_FOCUS"]) {
     NSLog(@"focus");
-    [[self window] makeFirstResponder:self];
-    [[self window] makeKeyAndOrderFront:self];
+    [self xxx];
+    //[[self window] makeFirstResponder:self];
+    //[[self window] makeKeyAndOrderFront:self];
   }
   if ([nm isEqual:@"ON_LOADING_START"]) {
     [delegate webView:self didStartLoading:[NSURL URLWithString:val]];
