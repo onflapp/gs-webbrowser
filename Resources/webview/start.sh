@@ -7,14 +7,12 @@ function cleanup {
 trap cleanup SIGINT SIGTERM
 
 CHROME=`type -p google-chrome`
+[ -z "$CHROME" ] && CHROME=`type -p chromium`
+[ -z "$CHROME" ] && CHROME=`type -p chromium-browser`
+[ -z "$CHROME" ] && CHROME=`type -p chrome`
+
 if [ -z "$CHROME" ];then
-  CHROME=`type -p chromium`
-fi
-if [ -z "$CHROME" ];then
-  CHROME=`type -p chrome`
-fi
-if [ -z "$CHROME" ];then
-  echo "no google-chromium or chrome found!"
+  echo "no google-chrome|chromium|chromium-browser|chrome found!"
   exit 1
 fi
 
