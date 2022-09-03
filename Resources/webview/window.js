@@ -41,6 +41,7 @@ window.addEventListener('load', function(evt) {
     console.log(evt);
   });
   wv.addEventListener('contentload', function(evt) {
+    /*
     this.executeScript({
       code: 
       'window.addEventListener("message", function(e) {' +
@@ -54,6 +55,7 @@ window.addEventListener('load', function(evt) {
     setTimeout(function() {
         wv.contentWindow.postMessage('init', '*');
     },200);
+    */
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);

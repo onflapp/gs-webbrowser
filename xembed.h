@@ -24,6 +24,7 @@
 #define XEMBED_FOCUS_FIRST              1
 #define XEMBED_FOCUS_LAST               2
 
+extern int sendclientmsg(Display* dpy, Window win, Atom protocol, Time time);
 extern int sendxembed(Display* dpy, Window win, long msg, long detail, long d1, long d2);
 
 #endif

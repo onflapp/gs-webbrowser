@@ -34,6 +34,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
 {
   Display* xdisplay;
   Window xwindowid;
+  BOOL isactive;
 }
 
 - (Window) createXWindowID;

@@ -135,36 +135,59 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   d = XOpenDisplay(NULL);
   s = DefaultScreen(d);
 
-  //w = XCreateSimpleWindow(d, ws, 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
-  //XSelectInput(d, w, ExposureMask | KeyPressMask | ButtonPressMask);
+  //Window w = XCreateSimpleWindow(d, ws, 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
+  //XSelectInput(d, w, KeyPressMask);
   //XMapWindow(d, w);
 
-  NSLog(@"start");
-  XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask | ButtonReleaseMask, GrabModeAsync, GrabModeAsync, None, None);
-  XGrabKeyboard(d, ws, 1, GrabModeAsync, GrabModeAsync, CurrentTime);
-  XSync(d, True);
+  XSelectInput(d, we, EnterWindowMask | LeaveWindowMask);
+  BOOL grabbing_mouse = NO;
+  BOOL grabbing_key = NO;
 
   while (1) {
     XNextEvent(d, &e);
-    NSLog(@"e");
-    if (e.type == Expose) {
+
+    if (e.type == EnterNotify) {
+      NSLog(@"M - GRAB");
+      XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
+      grabbing_mouse = YES;
+      
+      XGrabKey(d, AnyKey, AnyModifier, we, 1, GrabModeAsync, GrabModeAsync);
+      grabbing_key = YES;
     }
-    if (e.type == ButtonPress || e.type == ButtonRelease) {
-      [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
-      XSendEvent(d, we, False, NoEventMask, &e);
-      XFlush(d);
-      NSLog(@"m");
+    else if (e.type == LeaveNotify) {
+      NSLog(@"M - UN GRAB");
+      XUngrabButton(d, AnyButton, AnyModifier, we);
+      grabbing_mouse = NO;
+
+      XUngrabKey(d, AnyKey, AnyModifier, we);
+      grabbing_key = NO;
     }
-    if (e.type == KeyPress || e.type == KeyRelease) {
-      XSendEvent(d, ws, False, NoEventMask, &e);
+    else if (e.type == ButtonPress) {
+      if (grabbing_mouse) {
+        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+        XUngrabButton(d, AnyButton, AnyModifier, we);
+        grabbing_mouse = NO;
+      }
+      XAllowEvents(d, ReplayPointer, e.xbutton.time);
+      XSync(d, False);
+    }
+    else {
+      NSLog(@"E %d %d", e.xkey.state, e.xkey.keycode);
+      if (e.xkey.state == 64 || e.xkey.keycode == 133) {
+        XSendEvent(d, ws, False, NoEventMask, &e);
+      }
+      else if (((XEmbeddedView*)sender)->isactive) {
+        XSendEvent(d, we, False, NoEventMask, &e);
+      }
+      else {
+        XSendEvent(d, ws, False, NoEventMask, &e);
+      }
       XFlush(d);
     }
   }
- 
-  XUngrabKeyboard(d, CurrentTime);
+
   XUngrabButton(d, AnyButton, AnyModifier, we);
-  XCloseDisplay(d);
-  NSLog(@"end");
+  XUngrabKey(d, AnyKey, AnyModifier, we);
 }
 
 - (void) windowWillClose:(NSNotification*) note {
@@ -221,25 +244,29 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (BOOL) acceptsFirstResponder {
-    return YES;
-}
-
-- (void) xxx {
-  //Window myxwindowid = (Window)[[self window]windowRef];
-//XSetInputFocus(xdisplay, xwindowid, RevertToNone, CurrentTime);
-//XFlush(xdisplay);
+  return YES;
 }
 
 - (BOOL) becomeFirstResponder {
+  isactive = YES;
+  NSLog(@"FOCUS");
   if (xdisplay && xwindowid) {
+    Atom take_focus = XInternAtom(xdisplay, "WM_TAKE_FOCUS", False);
     sendxembed(xdisplay, xwindowid, XEMBED_FOCUS_IN, XEMBED_FOCUS_CURRENT, 0, 0);
     sendxembed(xdisplay, xwindowid, XEMBED_WINDOW_ACTIVATE, 0, 0, 0);
+
+    sendclientmsg(xdisplay, xwindowid, take_focus, CurrentTime);
+    //XSetInputFocus(xdisplay, xwindowid, RevertToNone, CurrentTime);
+    //do not use it, it will hide the GNUStep menu, etc.
+    
     XFlush(xdisplay);
   }
   return YES;
 }
 
 - (BOOL) resignFirstResponder {
+  isactive = NO;
+  NSLog(@"OUT");
   if (xdisplay && xwindowid) {
     sendxembed(xdisplay, xwindowid, XEMBED_FOCUS_OUT, XEMBED_FOCUS_CURRENT, 0, 0);
     sendxembed(xdisplay, xwindowid, XEMBED_WINDOW_DEACTIVATE, 0, 0, 0);
@@ -311,7 +338,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSLog(@"mmmm %x - %x:", xwindowid, myxwindowid);
   
   [self performSelector:@selector(resizeXWindow) withObject:nil afterDelay:0.1];
-  //[self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
+  [self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
 }
 
 - (Window) findXWindowID:(NSString*) name {
