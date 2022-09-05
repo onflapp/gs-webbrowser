@@ -20,7 +20,8 @@
 	"XEmbeddedView.m",
 	"ChromeWebView.m",
 	"ExternalWebView.m",
-	"ChromeController.m"
+	"ChromeController.m",
+	"FindPanel.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -38,7 +39,8 @@
 	"xembed.h",
 	"ChromeWebView.h",
 	"ExternalWebView.h",
-	"ChromeController.h"
+	"ChromeController.h",
+	"FindPanel.h"
     );
     IMAGES = (
 	"Home.tiff",
@@ -55,7 +57,8 @@
 	"MainMenu-GNUstep.gsmarkup",
 	"MainMenu-OSX.gsmarkup",
 	"Document.gorm",
-	"Preferences.gorm"
+	"Preferences.gorm",
+	"FindPanel.gorm"
     );
     LANGUAGE = English;
     LIBRARIES = (

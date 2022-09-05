@@ -38,6 +38,7 @@ Resources/MainMenu-GNUstep.gsmarkup \
 Resources/MainMenu-OSX.gsmarkup \
 Resources/Document.gorm \
 Resources/Preferences.gorm \
+Resources/FindPanel.gorm \
 Resources/Home.tiff \
 Resources/Left.tiff \
 Resources/Right.tiff \
@@ -59,7 +60,8 @@ XEmbeddedView.h \
 xembed.h \
 ChromeWebView.h \
 ExternalWebView.h \
-ChromeController.h
+ChromeController.h \
+FindPanel.h
 
 #
 # Objective-C Class files
@@ -72,7 +74,8 @@ common.m \
 XEmbeddedView.m \
 ChromeWebView.m \
 ExternalWebView.m \
-ChromeController.m
+ChromeController.m \
+FindPanel.m
 
 #
 # Other sources

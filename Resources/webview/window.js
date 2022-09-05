@@ -106,5 +106,12 @@ CMD = {
   },
   'SELECTALL': function(val) {
     window.mywebview.executeScript({code:'document.execCommand("selectall")'});
-  }
+  },
+  'FINDNEXT': function(val) {
+    window.mywebview.find(val);
+  },
+  'FINDPREV': function(val) {
+    window.mywebview.find(val, {backward:true});
+  },
+
 };

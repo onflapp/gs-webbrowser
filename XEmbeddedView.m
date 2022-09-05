@@ -251,11 +251,9 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   isactive = YES;
   NSLog(@"FOCUS");
   if (xdisplay && xwindowid) {
-    Atom take_focus = XInternAtom(xdisplay, "WM_TAKE_FOCUS", False);
     sendxembed(xdisplay, xwindowid, XEMBED_FOCUS_IN, XEMBED_FOCUS_CURRENT, 0, 0);
     sendxembed(xdisplay, xwindowid, XEMBED_WINDOW_ACTIVATE, 0, 0, 0);
 
-    sendclientmsg(xdisplay, xwindowid, take_focus, CurrentTime);
     //XSetInputFocus(xdisplay, xwindowid, RevertToNone, CurrentTime);
     //do not use it, it will hide the GNUStep menu, etc.
     
@@ -334,9 +332,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   XReparentWindow(xdisplay, xwindowid, myxwindowid, 0, 0);
   XSync(xdisplay, False);
   XMapWindow(xdisplay, xwindowid);
-  
-  NSLog(@"mmmm %x - %x:", xwindowid, myxwindowid);
-  
+ 
   [self performSelector:@selector(resizeXWindow) withObject:nil afterDelay:0.1];
   [self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
 }

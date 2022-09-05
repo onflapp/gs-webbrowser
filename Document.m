@@ -26,6 +26,7 @@
 #import "common.h"
 
 @implementation Document
+
 - (id) init {
   self = [super init];
   [NSBundle loadNibNamed:@"Document" owner:self];

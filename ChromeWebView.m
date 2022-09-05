@@ -1,4 +1,5 @@
 #import "ChromeWebView.h"
+#import "FindPanel.h"
 #include <X11/Xlib.h>
 
 @implementation ChromeWebView
@@ -145,6 +146,21 @@
 
 - (void) goForward:(id) sender {
   [self sendCommand:@"FORWARD"];
+}
+
+- (void) performFindPanelAction:(id) sender {
+  FindPanel* panel = [FindPanel sharedInstance];
+  if ([sender tag] == 1) {
+    [panel orderFrontFindPanel:sender];
+  }
+  else if ([sender tag] == 2) {
+    NSString* text = [panel findString];
+    [self sendCommand:[NSString stringWithFormat:@"FINDNEXT:%@", text]];
+  }
+  else if ([sender tag] == 3) {
+    NSString* text = [panel findString];
+    [self sendCommand:[NSString stringWithFormat:@"FINDPREV:%@", text]];
+  }
 }
 
 @end
