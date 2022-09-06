@@ -15,6 +15,7 @@
 
   if ([[pasteboard types] containsObject:NSStringPboardType]) {
     NSString *string = [pasteboard stringForType:NSStringPboardType];
+    [self setFindString:string];
   }
 }
 
@@ -31,9 +32,14 @@ static id	sharedFindPanel = nil;
   if (!sharedFindPanel) {
     sharedFindPanel = [[self alloc] init];
     [NSBundle loadNibNamed:@"FindPanel" owner:sharedFindPanel];
-    //[findPanel setDefaultButtonCell:[findNextButton cell]];
   }
   return sharedFindPanel;
+}
+
+- (void)performFindPanelAction:(id) sender {
+  [self saveFindStringToPasteboard];
+  id resp = [[NSApp mainWindow] firstResponder];
+  [resp performSelector:@selector(performFindPanelAction:) withObject:sender];
 }
 
 - (void) dealloc {
@@ -47,10 +53,10 @@ static id	sharedFindPanel = nil;
 }
 
 - (void)setFindString:(NSString*)string {
+  [findText setStringValue:string];
 }
 
 - (void)orderFrontFindPanel:(id)sender {
-  NSLog(@"order %@", panel);
   [self loadFindStringFromPasteboard];
   [panel makeKeyAndOrderFront:nil];
 }

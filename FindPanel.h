@@ -7,6 +7,8 @@
 
 + (id)sharedInstance;
 - (NSString*)findString;
+
 - (void)orderFrontFindPanel:(id)sender;
+- (void)performFindPanelAction:(id) sender;
 
 @end

@@ -2,7 +2,8 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     FindPanel = {
 	Actions = (
-	    "orderFrontFindPanel:"
+	    "orderFrontFindPanel:",
+	    "performFindPanelAction:"
 	);
 	Outlets = (
 	    panel,
@@ -12,6 +13,7 @@
     };
     FirstResponder = {
 	Actions = (
+	    "findPrevious:",
 	    "orderFrontFindPanel:"
 	);
 	Super = NSObject;
