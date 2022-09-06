@@ -111,12 +111,23 @@
   }
 }
 
+- (void) syncPasteboard {
+  NSString *sel = [[NSPasteboard pasteboardWithName:@"Selection"] stringForType:NSStringPboardType];
+  if (sel) {
+    NSPasteboard* pb = [NSPasteboard generalPasteboard];
+    [pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    [pb setString:sel forType:NSStringPboardType];
+  }
+}
+
 - (void) copy:(id)sender {
   [self sendCommand:@"COPY"];
+  [self performSelector:@selector(syncPasteboard) withObject:nil afterDelay:0.3];
 }
 
 - (void) cut:(id)sender {
   [self sendCommand:@"CUT"];
+  [self performSelector:@selector(syncPasteboard) withObject:nil afterDelay:0.3];
 }
 
 - (void) paste:(id)sender {

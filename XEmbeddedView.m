@@ -178,7 +178,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     XNextEvent(d, &e);
 
     if (e.type == EnterNotify && e.xcrossing.mode == NotifyNormal) {
-      NSLog(@"M - GRAB");
+      //NSLog(@"M - GRAB");
       XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
       grabbing_mouse = YES;
       
@@ -186,7 +186,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
       grabbing_key = YES;
     }
     else if (e.type == LeaveNotify && e.xcrossing.mode == NotifyNormal) {
-      NSLog(@"M - UN GRAB %d %d", e.xcrossing.mode, e.xcrossing.focus);
+      //NSLog(@"M - UN GRAB %d %d", e.xcrossing.mode, e.xcrossing.focus);
       XUngrabButton(d, AnyButton, AnyModifier, we);
       grabbing_mouse = NO;
 
@@ -204,8 +204,10 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     }
     else if (e.type == KeyPress || e.type == KeyRelease) {
       KeySym keysym = XKeycodeToKeysym(d, e.xkey.keycode, 0);
-      NSLog(@"E %d %d %d %x", e.type, e.xkey.state, e.xkey.keycode, keysym);
-      if (e.xkey.state & ControlMask || e.xkey.state & Mod1Mask || e.xkey.state & Mod4Mask) {
+      //NSLog(@"E %d %d %d %x", e.type, e.xkey.state, e.xkey.keycode, keysym);
+      if (e.xkey.state & ControlMask || \
+          e.xkey.state & Mod1Mask || \
+          e.xkey.state & Mod4Mask) {
         XSendEvent(d, ws, False, NoEventMask, &e);
       }
       else if (keysym == XK_Control_L || \
