@@ -36,6 +36,7 @@ window.addEventListener('load', function(evt) {
   });
   wv.addEventListener('permissionrequest', function(evt) {
     if (evt.permission === 'download') {
+      sendCommand('ON_DOWNLOAD:'+evt.request.url);
       evt.request.allow();
     }
     console.log(evt);
@@ -112,6 +113,5 @@ CMD = {
   },
   'FINDPREV': function(val) {
     window.mywebview.find(val, {backward:true});
-  },
-
+  }
 };

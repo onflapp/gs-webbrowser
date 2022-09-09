@@ -38,5 +38,5 @@ echo "" > "$LOCK"
 cd "$WDIR"
 "$CHROME" --user-data-dir=$DDIR --silent-launch --load-and-launch-app=`pwd` "$PIDF"
 
-sleep 3
+sleep 1
 cleanup

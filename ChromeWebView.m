@@ -1,5 +1,6 @@
 #import "ChromeWebView.h"
 #import "FindPanel.h"
+#import "DownloadPanel.h"
 #include <X11/Xlib.h>
 
 @implementation ChromeWebView
@@ -68,6 +69,19 @@
   if ([nm isEqual:@"ON_NEW_WINDOW"]) {
     [[NSApp delegate] application:NSApp openFile:val];
   }
+  if ([nm isEqual:@"ON_DOWNLOAD"]) {
+    NSURL* url = [NSURL URLWithString:val];
+    if (url) {
+      [self requestDownload:url];
+    }
+  }
+}
+
+- (void) requestDownload:(NSURL*) url {
+  DownloadPanel* download = [[DownloadPanel alloc]initWithURL:url forWebView:self];
+  NSWindow* win = [download window];
+  [[self window]addChildWindow:win ordered:NSWindowAbove];
+  [win orderFront:self];
 }
 
 - (void) setDelegate:(id) del {

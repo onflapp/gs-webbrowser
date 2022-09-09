@@ -39,6 +39,7 @@ Resources/MainMenu-OSX.gsmarkup \
 Resources/Document.gorm \
 Resources/Preferences.gorm \
 Resources/FindPanel.gorm \
+Resources/DownloadPanel.gorm \
 Resources/Home.tiff \
 Resources/Left.tiff \
 Resources/Right.tiff \
@@ -61,6 +62,7 @@ xembed.h \
 ChromeWebView.h \
 ExternalWebView.h \
 ChromeController.h \
+DownloadPanel.h \
 FindPanel.h
 
 #
@@ -75,6 +77,7 @@ XEmbeddedView.m \
 ChromeWebView.m \
 ExternalWebView.m \
 ChromeController.m \
+DownloadPanel.m \
 FindPanel.m
 
 #
