@@ -42,13 +42,15 @@ window.addEventListener('load', function(evt) {
     console.log(evt);
   });
   wv.addEventListener('contentload', function(evt) {
-    /*
     this.executeScript({
       code: 
       'window.addEventListener("message", function(e) {' +
         'if (e.data == "init") {' +
-          'window.addEventListener("click", function(evt) { ' +
-            'e.source.postMessage("ON_FOCUS:", "*"); ' +
+          'window.addEventListener("mouseup", function(evt) { ' +
+            'if (evt.button > 0 && evt.target.tagName === "A") {' +
+              'console.log(evt);' +
+              'e.source.postMessage("ON_LINK_INFO:"+evt.target.href, "*"); ' +
+            '}' +
           '});' +
         '}' +
       '})'
@@ -56,7 +58,6 @@ window.addEventListener('load', function(evt) {
     setTimeout(function() {
         wv.contentWindow.postMessage('init', '*');
     },200);
-    */
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);
