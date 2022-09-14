@@ -21,7 +21,9 @@
 	"ChromeWebView.m",
 	"ExternalWebView.m",
 	"ChromeController.m",
-	"FindPanel.m"
+	"FindPanel.m",
+	"DownloadPanel.m",
+	"LinkPanel.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -40,7 +42,9 @@
 	"ChromeWebView.h",
 	"ExternalWebView.h",
 	"ChromeController.h",
-	"FindPanel.h"
+	"FindPanel.h",
+	"DownloadPanel.h",
+	"LinkPanel.h"
     );
     IMAGES = (
 	"Home.tiff",
@@ -58,7 +62,9 @@
 	"MainMenu-OSX.gsmarkup",
 	"Document.gorm",
 	"Preferences.gorm",
-	"FindPanel.gorm"
+	"FindPanel.gorm",
+	"DownloadPanel.gorm",
+	"LinkPanel.gorm"
     );
     LANGUAGE = English;
     LIBRARIES = (
