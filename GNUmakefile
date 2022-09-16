@@ -25,7 +25,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
 VERSION = 0.1
 PACKAGE_NAME = WebBrowser
 APP_NAME = WebBrowser
-WebBrowser_APPLICATION_ICON = 
+WebBrowser_APPLICATION_ICON = WebBrowser.tiff
 
 
 #
@@ -47,6 +47,7 @@ Resources/Right.tiff \
 Resources/LeftX.tiff \
 Resources/Link.tiff \
 Resources/RightX.tiff \
+Resources/WebBrowser.tiff \
 Resources/webview 
 
 

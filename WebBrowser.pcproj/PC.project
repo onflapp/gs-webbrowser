@@ -1,5 +1,5 @@
 {
-    APPLICATIONICON = "";
+    APPLICATIONICON = "WebBrowser.tiff";
     "APP_DOCUMENT_BASED" = NO;
     "APP_TYPE" = GORM;
     "BUILDER_TARGETS" = (
@@ -52,7 +52,8 @@
 	"Right.tiff",
 	"LeftX.tiff",
 	"Link.tiff",
-	"RightX.tiff"
+	"RightX.tiff",
+	"WebBrowser.tiff"
     );
     INSTALLDIR = "$(HOME)/GNUstep";
     INTERFACES = (
