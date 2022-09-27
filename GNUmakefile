@@ -33,9 +33,6 @@ WebBrowser_APPLICATION_ICON = WebBrowser.tiff
 #
 WebBrowser_RESOURCE_FILES = \
 Resources/WebBrowser.gorm \
-Resources/Main.gsmarkup \
-Resources/MainMenu-GNUstep.gsmarkup \
-Resources/MainMenu-OSX.gsmarkup \
 Resources/Document.gorm \
 Resources/Preferences.gorm \
 Resources/FindPanel.gorm \

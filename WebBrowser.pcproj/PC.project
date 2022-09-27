@@ -58,9 +58,6 @@
     INSTALLDIR = "$(HOME)/GNUstep";
     INTERFACES = (
 	"WebBrowser.gorm",
-	"Main.gsmarkup",
-	"MainMenu-GNUstep.gsmarkup",
-	"MainMenu-OSX.gsmarkup",
 	"Document.gorm",
 	"Preferences.gorm",
 	"FindPanel.gorm",
