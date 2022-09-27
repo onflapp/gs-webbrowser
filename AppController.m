@@ -21,7 +21,7 @@
   
   [defaults setValue:webview forKey:@"WEBVIEW"];
   [defaults setValue:@"https://www.google.com/search?q=" forKey:@"SEARCH_ADDRESS"];
-  [defaults setValue:@"https://github.com/trunkmaster/nextspace" forKey:@"HOME_ADDRESS"];
+  [defaults setValue:@"https://github.com/onflapp/gs-desktop" forKey:@"HOME_ADDRESS"];
   
   [[NSUserDefaults standardUserDefaults] registerDefaults: defaults];
   [[NSUserDefaults standardUserDefaults] synchronize];
