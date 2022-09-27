@@ -41,9 +41,6 @@ Resources/LinkPanel.gorm \
 Resources/Home.tiff \
 Resources/Left.tiff \
 Resources/Right.tiff \
-Resources/LeftX.tiff \
-Resources/Link.tiff \
-Resources/RightX.tiff \
 Resources/WebBrowser.tiff \
 Resources/webview 
 

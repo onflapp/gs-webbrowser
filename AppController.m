@@ -66,9 +66,9 @@
   }
 }
 
-- (void)openLocationService:(NSPasteboard *)pboard
-                     userData:(NSString *)userData
-                        error:(NSString **)error  {
+- (void)openURL:(NSPasteboard *)pboard
+       userData:(NSString *)userData
+          error:(NSString **)error  {
   NSString *path = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"]];
 
   if (path) {
@@ -78,9 +78,14 @@
 
 - (BOOL) application: (NSApplication *)application
             openFile: (NSString *)fileName {
+
   NSURL* url = nil;
   if ([fileName hasPrefix:@"http"] || [fileName hasPrefix:@"file"]) {
     url = [NSURL URLWithString:fileName];
+  }
+  else if([[fileName pathExtension] isEqualToString:@"url"]) {
+    NSString* str = [[NSString stringWithContentsOfFile:fileName] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"]];
+    url = [NSURL URLWithString:str];
   }
   else if ([fileName hasPrefix:@"/"]) {
     url = [NSURL fileURLWithPath:fileName];

@@ -50,9 +50,6 @@
 	"Home.tiff",
 	"Left.tiff",
 	"Right.tiff",
-	"LeftX.tiff",
-	"Link.tiff",
-	"RightX.tiff",
 	"WebBrowser.tiff"
     );
     INSTALLDIR = "$(HOME)/GNUstep";
@@ -94,6 +91,12 @@
 	    NSIcon = "html.tiff";
 	    NSUnixExtensions = (
 		html
+	    );
+	},
+	{
+	    NSIcon = "url.tiff";
+	    NSUnixExtensions = (
+		url
 	    );
 	}
     );
