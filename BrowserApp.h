@@ -32,7 +32,7 @@
    BOOL ignore_deactivation;
 }
 
-- (void) setIgnoreDeactivation:(BOOL) val;
+- (void) delayDeactivation;
 
 @end
 
