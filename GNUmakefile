@@ -60,7 +60,9 @@ ExternalWebView.h \
 ChromeController.h \
 FindPanel.h \
 DownloadPanel.h \
-LinkPanel.h
+LinkPanel.h \
+BrowserWindow.h \
+BrowserApp.h
 
 #
 # Objective-C Class files
@@ -76,7 +78,9 @@ ExternalWebView.m \
 ChromeController.m \
 FindPanel.m \
 DownloadPanel.m \
-LinkPanel.m
+LinkPanel.m \
+BrowserWindow.m \
+BrowserApp.m
 
 #
 # Other sources

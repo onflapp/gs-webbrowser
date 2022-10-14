@@ -1,11 +1,11 @@
 /*
    Project: WebBrowser
 
-   Copyright (C) 2020 Free Software Foundation
+   Copyright (C) 2022 Free Software Foundation
 
-   Author: root
+   Author: ,,,
 
-   Created: 2020-08-08 14:25:54 +0300 by root
+   Created: 2022-10-12 10:14:47 +0000 by pi
 
    This application is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public
@@ -22,33 +22,16 @@
    Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 */
 
-#ifndef _XEMBEDDEDVIEW_H_
-#define _XEMBEDDEDVIEW_H_
+#ifndef _BROWSERWINDOW_H_
+#define _BROWSERWINDOW_H_
 
 #import <AppKit/AppKit.h>
-#include <X11/Xlib.h>
 
-Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
-
-@interface XEmbeddedView : NSView
+@interface BrowserWindow : NSWindow
 {
-  Display* xdisplay;
-  Window xwindowid;
-  BOOL isactive;
-  BOOL isvisible;
 }
-
-- (Window) createXWindowID;
-- (Window) findXWindowID:(NSString*) name;
-- (void) windowWillClose:(NSNotification*) note;
-- (void) destroyXWindow;
-- (void) activateXWindow;
-- (void) deactivateXWindow:(NSNotification*) note;
-- (void) remapXWindow:(Window)xwinid;
-
-- (Window) embededXWindowID;
 
 @end
 
-#endif // _XEMBEDDEDVIEW_H_
+#endif // _BROWSERWINDOW_H_
 

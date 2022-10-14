@@ -23,7 +23,9 @@
 	"ChromeController.m",
 	"FindPanel.m",
 	"DownloadPanel.m",
-	"LinkPanel.m"
+	"LinkPanel.m",
+	"BrowserWindow.m",
+	"BrowserApp.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -44,7 +46,9 @@
 	"ChromeController.h",
 	"FindPanel.h",
 	"DownloadPanel.h",
-	"LinkPanel.h"
+	"LinkPanel.h",
+	"BrowserWindow.h",
+	"BrowserApp.h"
     );
     IMAGES = (
 	"Home.tiff",
@@ -79,7 +83,7 @@
 	"WebBrowser_main.m",
 	"xembed.c"
     );
-    "PRINCIPAL_CLASS" = NSApplication;
+    "PRINCIPAL_CLASS" = BrowserApp;
     "PROJECT_AUTHORS" = (
     );
     "PROJECT_COPYRIGHT" = "Copyright (C) 200x";

@@ -41,7 +41,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   XWindowAttributes wattrs;
   XClassHint whints;
 
-  //Atom atom_PID = XInternAtom(dpy, "_NET_WM_PID", True);
   Atom atom_CLASS = XInternAtom(dpy, "WM_CLASS", True);
   Atom atom_NAME = XInternAtom(dpy, "WM_NAME", True);
   
@@ -131,22 +130,23 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   self = [super initWithFrame:r];
   xwindowid = 0;
   xdisplay = NULL;
+  NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
 
-  /*
-  [[NSNotificationCenter defaultCenter] addObserver:self 
-					   selector:@selector(deactivateXWindow:) 
-					  name:NSWindowDidResignKeyNotification
-					object:[self window]];
-*/				       
-  [[NSNotificationCenter defaultCenter] addObserver:self 
-					   selector:@selector(windowWillClose:) 
-					  name:NSWindowWillCloseNotification
-					object:[self window]];
+  [nc addObserver:self 
+         selector:@selector(deactivateXWindow:) 
+	     name:NSApplicationWillResignActiveNotification
+	   object:NSApp];
+
+  [nc addObserver:self 
+	 selector:@selector(windowWillClose:) 
+	     name:NSWindowWillCloseNotification
+	   object:[self window]];
 
   return self;
 }
 
 - (void) dealloc {
+  NSLog(@"dealloc");
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   if (xwindowid != 0) {
     [self unmapXWindow];
@@ -157,6 +157,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (void) processXWindowsEvents:(id) sender {
+  XInitThreads();
+
   Window ws = (Window)[[sender window]windowRef];
   Window we = (Window)[sender embededXWindowID];
   Display *d;
@@ -166,41 +168,57 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   d = XOpenDisplay(NULL);
   s = DefaultScreen(d);
 
-  //Window w = XCreateSimpleWindow(d, ws, 0, 0, 100, 100, 1, BlackPixel(d, s), WhitePixel(d, s));
-  //XSelectInput(d, w, KeyPressMask);
-  //XMapWindow(d, w);
-
+  Window root = XDefaultRootWindow(d);
+  Atom ignore_focus = XInternAtom(d, WM_IGNORE_FOCUS_EVENTS, True);
   XSelectInput(d, we, EnterWindowMask | LeaveWindowMask);
+
   BOOL grabbing_mouse = NO;
   BOOL grabbing_key = NO;
+  BOOL active = NO;
+  BOOL reset = NO;
 
   while (1) {
     XNextEvent(d, &e);
+    active = (((XEmbeddedView*)sender)->isactive);
+
+    if (reset) sendclientmsg(d, root, ignore_focus, 0);
+    reset = NO;
 
     if (e.type == EnterNotify && e.xcrossing.mode == NotifyNormal) {
-      //NSLog(@"M - GRAB");
-      XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
-      grabbing_mouse = YES;
-      
-      XGrabKey(d, AnyKey, AnyModifier, we, 1, GrabModeAsync, GrabModeAsync);
-      grabbing_key = YES;
+      if (!active) {
+        NSLog(@"M - GRAB");
+        XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
+        XFlush(d);
+        grabbing_mouse = YES;
+      }
+
+      //XGrabKey(d, AnyKey, AnyModifier, we, 1, GrabModeAsync, GrabModeAsync);
+      //grabbing_key = YES;
     }
     else if (e.type == LeaveNotify && e.xcrossing.mode == NotifyNormal) {
-      //NSLog(@"M - UN GRAB %d %d", e.xcrossing.mode, e.xcrossing.focus);
-      XUngrabButton(d, AnyButton, AnyModifier, we);
-      grabbing_mouse = NO;
-
-      XUngrabKey(d, AnyKey, AnyModifier, we);
-      grabbing_key = NO;
-    }
-    else if (e.type == ButtonPress) {
-      if (grabbing_mouse && e.xbutton.button == Button1) {
-        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+      if (grabbing_mouse) {
+        NSLog(@"M - UN GRAB %d %d", e.xcrossing.mode, e.xcrossing.focus);
         XUngrabButton(d, AnyButton, AnyModifier, we);
+        XFlush(d);
         grabbing_mouse = NO;
       }
+
+      //XUngrabKey(d, AnyKey, AnyModifier, we);
+      //grabbing_key = NO;
+    }
+    else if (e.type == ButtonPress) {
+      if (grabbing_mouse) {
+        XUngrabButton(d, AnyButton, AnyModifier, we);
+        XFlush(d);
+        grabbing_mouse = NO;
+
+        if (e.xbutton.button == Button1) {
+          sendclientmsg(d, root, ignore_focus, 1);
+          reset = YES;
+          [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+        }
+      }
       XAllowEvents(d, ReplayPointer, e.xbutton.time);
-      XSync(d, False);
     }
     else if (e.type == KeyPress || e.type == KeyRelease) {
       KeySym keysym = XKeycodeToKeysym(d, e.xkey.keycode, 0);
@@ -277,15 +295,18 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSWindow* win = [self window];
   if (!win) return;
 
-  [win makeKeyAndOrderFront:self];  
-  [win makeFirstResponder:self];
   
   if ([NSApp isActive] == NO) {
+    NSLog(@"ACTIVATE");
     [NSApp activateIgnoringOtherApps:YES];
+    [win makeKeyAndOrderFront:self];
+  }
+  else {
+    [win makeFirstResponder:self];
   }
 }
 
-- (void) deactivateXWindow {
+- (void) deactivateXWindow:(NSNotification*) note {
   [self resignFirstResponder];
 }
 
@@ -294,28 +315,24 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (BOOL) becomeFirstResponder {
-  isactive = YES;
-  NSLog(@"FOCUS");
-  if (xdisplay && xwindowid) {
-    sendxembed(xdisplay, xwindowid, XEMBED_FOCUS_IN, XEMBED_FOCUS_CURRENT, 0, 0);
-    sendxembed(xdisplay, xwindowid, XEMBED_WINDOW_ACTIVATE, 0, 0, 0);
-
-    //XSetInputFocus(xdisplay, xwindowid, RevertToNone, CurrentTime);
-    //do not use it, it will hide the GNUStep menu, etc.
-    
+  if (!isactive) {
+    isactive = YES;
+    NSLog(@"FOCUS");
+    [NSApp setIgnoreDeactivation:YES];
+    XSetInputFocus(xdisplay, xwindowid, RevertToParent, CurrentTime);
     XFlush(xdisplay);
+    [self performSelector:@selector(resetIgnoringDeactivation) withObject:nil afterDelay:0.5];
   }
   return YES;
+}
+
+- (void) resetIgnoringDeactivation {
+  [NSApp setIgnoreDeactivation:NO];
 }
 
 - (BOOL) resignFirstResponder {
   isactive = NO;
   NSLog(@"OUT");
-  if (xdisplay && xwindowid) {
-    sendxembed(xdisplay, xwindowid, XEMBED_FOCUS_OUT, XEMBED_FOCUS_CURRENT, 0, 0);
-    sendxembed(xdisplay, xwindowid, XEMBED_WINDOW_DEACTIVATE, 0, 0, 0);
-    XFlush(xdisplay);
-  }
   return YES;
 }
 

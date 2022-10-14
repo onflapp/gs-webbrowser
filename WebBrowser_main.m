@@ -11,8 +11,6 @@
 int 
 main(int argc, const char *argv[])
 {
-  //gtk_init(&argc, &argv);
-
   return NSApplicationMain (argc, argv);
 }
 

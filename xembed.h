@@ -19,12 +19,14 @@
 #define XEMBED_UNREGISTER_ACCELERATOR   13
 #define XEMBED_ACTIVATE_ACCELERATOR     14
 
+#define WM_IGNORE_FOCUS_EVENTS "WM_IGNORE_FOCUS_EVENTS"
+
 /* Details for  XEMBED_FOCUS_IN: */
 #define XEMBED_FOCUS_CURRENT            0
 #define XEMBED_FOCUS_FIRST              1
 #define XEMBED_FOCUS_LAST               2
 
-extern int sendclientmsg(Display* dpy, Window win, Atom protocol, Time time);
 extern int sendxembed(Display* dpy, Window win, long msg, long detail, long d1, long d2);
+extern int sendclientmsg(Display* dpy, Window win, Atom msg, long value);
 
 #endif

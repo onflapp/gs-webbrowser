@@ -19,7 +19,7 @@
     NSExecutable = WebBrowser;
     NSIcon = "WebBrowser.tiff";
     NSMainNibFile = "WebBrowser.gorm";
-    NSPrincipalClass = NSApplication;
+    NSPrincipalClass = BrowserApp;
     NSRole = Application;
     NSServices = (
 	{
