@@ -23,8 +23,6 @@
 */
 
 #import "BrowserApp.h"
-#include "xembed.h"
-#include "X11/Xutil.h"
 
 @implementation BrowserApp
 
@@ -38,18 +36,12 @@
   }
 }
 
-- (void) delayDeactivation {
-  ignore_deactivation = YES;
-  [self performSelector:@selector(resetDelayDeactivation) withObject:nil afterDelay:0.5];
+- (void) enableDeactivation {
+  ignore_deactivation = NO;
 }
 
-- (void) resetDelayDeactivation {
-  Display *d = XOpenDisplay(NULL);
-  Window root = XDefaultRootWindow(d);
-  Atom ignore_focus = XInternAtom(d, WM_IGNORE_FOCUS_EVENTS, True);
-  sendclientmsg(d, root, ignore_focus, 0);
-  NSLog(@"RESET");
-  ignore_deactivation = NO;
+- (void) disableDeactivation {
+  ignore_deactivation = YES;
 }
 
 @end

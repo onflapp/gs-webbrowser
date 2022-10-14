@@ -32,7 +32,8 @@
    BOOL ignore_deactivation;
 }
 
-- (void) delayDeactivation;
+- (void) enableDeactivation;
+- (void) disableDeactivation;
 
 @end
 

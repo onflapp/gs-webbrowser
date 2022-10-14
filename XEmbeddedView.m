@@ -23,6 +23,7 @@
 */
 
 #import "XEmbeddedView.h"
+#import <GNUstepGUI/GSDisplayServer.h>
 #include "xembed.h"
 #include "X11/Xutil.h"
 #include "X11/keysymdef.h"
@@ -179,7 +180,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
   if (xdisplay && xwindowid) {
     XDestroyWindow(xdisplay, xwindowid);
-    XSync(xdisplay, True);
+    XFlush(xdisplay);
+
     xdisplay = NULL;
     xwindowid = 0;
     NSLog(@"DESTROY");
@@ -336,8 +338,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   while (1) {
     XNextEvent(d, &e);
 
-    if (e.type == EnterNotify && e.xcrossing.mode == NotifyNormal && 
-        (e.xcrossing.detail == NotifyVirtual || e.xcrossing.detail == NotifyNonlinearVirtual)) {
+    if (e.type == EnterNotify && e.xcrossing.mode == NotifyNormal) {
       XGetInputFocus(d, &wf, &wr);
       if (wf != None && wf != we) {
         NSLog(@"M - GRAB");
@@ -366,14 +367,20 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
         XSync(xdisplay, True);
         grabbing_mouse = NO;
 
-        [NSApp performSelectorOnMainThread:@selector(delayDeactivation) withObject:nil waitUntilDone:YES];
+        [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
+        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
 
         NSLog(@"XSetInputFocus %x", we);
         sendclientmsg(d, root, ignore_focus, 1);
+        usleep(200000);
+        
         XSetInputFocus(d, we, RevertToParent, CurrentTime);
         XSync(xdisplay, True);
 
-        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+        usleep(200000);
+        sendclientmsg(d, root, ignore_focus, 0);
+
+        [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
       }
       XAllowEvents(d, ReplayPointer, e.xbutton.time);
     }
@@ -411,6 +418,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   XUngrabButton(d, AnyButton, AnyModifier, we);
   XUngrabKey(d, AnyKey, AnyModifier, we);
   NSLog(@"we are done here");
+
+  xwindowid = 0;
 }
 
 
