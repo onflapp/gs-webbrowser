@@ -58,6 +58,14 @@
   [self setURL:url];
 }
 
+- (void) goBack:(id) sender {
+  [webView goBack:sender];
+}
+
+- (void) goForward:(id) sender {
+  [webView goForward:sender];
+}
+
 - (void) setURL:(NSURL*) url {
   if (!url) return;
   

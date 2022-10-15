@@ -37,6 +37,9 @@
 }
 
 - (void) loadLocation:(id) sender;
+- (void) goBack:(id) sender;
+- (void) goForward:(id) sender;
+
 - (void) setURL:(NSURL*) url;
 
 @end

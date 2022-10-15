@@ -21,7 +21,9 @@
     };
     Document = {
 	Actions = (
-	    "loadLocation:"
+	    "loadLocation:",
+	    "goBack:",
+	    "goForward:"
 	);
 	Outlets = (
 	    window,
@@ -45,6 +47,7 @@
 	    "goHome:",
 	    "loadLocation:",
 	    "loadURL:",
+	    "newAction:",
 	    "remapXWindow:",
 	    "setDelegate:",
 	    "stopLoading:"
