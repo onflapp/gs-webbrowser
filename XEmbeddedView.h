@@ -36,6 +36,10 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
   Window xwindowid;
   BOOL isactive;
   BOOL isvisible;
+
+  KeySym filterModL;
+  KeySym filterModR;
+  int filterMod;
 }
 
 - (Window) createXWindowID;

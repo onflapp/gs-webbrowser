@@ -285,6 +285,30 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   return foundWindow;
 }
 
+- (void) initModFilter {
+  NSString* cmdkey = [[NSUserDefaults standardUserDefaults] valueForKey:@"GSFirstCommandKey"];
+  if ([cmdkey isEqualToString:@"Super_L"]) {
+    filterModL = XK_Super_L;
+    filterModR = XK_Super_R;
+    filterMod = Mod4Mask;
+  }
+  else if ([cmdkey isEqualToString:@"Alt_L"]) {
+    filterModL = XK_Alt_L;
+    filterModR = XK_Alt_L;
+    filterMod = Mod1Mask;
+  }
+  else if ([cmdkey isEqualToString:@"Meta_L"]) {
+    filterModL = XK_Meta_L;
+    filterModR = XK_Meta_R;
+    filterMod = Mod2Mask;
+  }
+  else {
+    filterModL = XK_Control_L;
+    filterModR = XK_Control_R;
+    filterMod = ControlMask;
+  }
+}
+
 - (void) remapXWindow:(Window) xwinid {  
   Window myxwindowid = (Window)[[self window]windowRef];
   xdisplay = XOpenDisplay(NULL);
@@ -309,6 +333,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 	 selector:@selector(windowWillClose:) 
 	     name:NSWindowWillCloseNotification
 	   object:[self window]];
+
+  [self initModFilter];
 
   [self performSelector:@selector(resizeXWindow) withObject:nil afterDelay:0.1];
   [self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
@@ -389,20 +415,11 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     }
     else if (e.type == KeyPress || e.type == KeyRelease) {
       KeySym keysym = XKeycodeToKeysym(d, e.xkey.keycode, 0);
-      NSLog(@"E %d %d %d %x", e.type, e.xkey.state, e.xkey.keycode, keysym);
-      if (e.xkey.state & ControlMask || \
-          e.xkey.state & Mod1Mask || \
-          e.xkey.state & Mod4Mask) {
+      //NSLog(@"E %d %d %d %x", e.type, e.xkey.state, e.xkey.keycode, keysym);
+      if (e.xkey.state & filterMod) {
         XSendEvent(d, ws, False, NoEventMask, &e);
       }
-      else if (keysym == XK_Control_L || \
-               keysym == XK_Control_R || \
-               keysym == XK_Meta_L || \
-               keysym == XK_Meta_R || \
-               keysym == XK_Super_L || \
-               keysym == XK_Super_R || \
-               keysym == XK_Alt_L || \
-               keysym == XK_Alt_R) {
+      else if (keysym == filterModL || keysym == filterModR) {
         XSendEvent(d, ws, False, NoEventMask, &e);
       }
       else if (((XEmbeddedView*)sender)->isactive) {
