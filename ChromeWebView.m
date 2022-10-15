@@ -67,6 +67,9 @@
   if ([nm isEqual:@"ON_LOADING_STOP"]) {
     [delegate webView:self didFinishLoading:[NSURL URLWithString:val]];
   }
+  if ([nm isEqual:@"ON_TITLE"]) {
+    [delegate webView:self didChangeTitle:val];
+  }
   if ([nm isEqual:@"ON_NEW_WINDOW"]) {
     [[NSApp delegate] application:NSApp openFile:val];
   }

@@ -25,8 +25,6 @@ window.addEventListener('load', function(evt) {
     var u = window.mywebview.getAttribute('src');
     sendCommand('ON_LOADING_STOP:'+(u?u:''));
   });
-  wv.addEventListener('contentload', function(evt) {
-  });
   wv.addEventListener('message', function(evt) {
     console.log(evt);
   });
@@ -52,6 +50,7 @@ window.addEventListener('load', function(evt) {
               'e.source.postMessage("ON_LINK_INFO:"+evt.target.href, "*"); ' +
             '}' +
           '});' +
+          'e.source.postMessage("ON_TITLE:"+window.document.title, "*"); ' +
         '}' +
       '})'
     });

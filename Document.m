@@ -32,9 +32,6 @@
   [NSBundle loadNibNamed:@"Document" owner:self];
   [window setFrameAutosaveName:@"browser_window"];
   
-  //GORM doesn't make the connection our GTKWebView for some reason
-  //so we have to do it manually
-
   for (NSView* view in [[window contentView] subviews]) {
     if ([view isKindOfClass:[ChromeWebView class]]) {
       webView = view;
