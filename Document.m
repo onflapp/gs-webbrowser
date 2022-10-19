@@ -34,7 +34,7 @@
   
   for (NSView* view in [[window contentView] subviews]) {
     if ([view isKindOfClass:[ChromeWebView class]]) {
-      webView = view;
+      webView = (ChromeWebView*)view;
       break;
     }
   }
@@ -79,7 +79,7 @@
   if ([sender isKindOfClass:[NSTextField class]]) val = [sender stringValue];
   else val = [addressField stringValue];
   
-  if ([val hasPrefix:@"http://"] || [val hasPrefix:@"https://"]) {
+  if ([val hasPrefix:@"http://"] || [val hasPrefix:@"https://"] || [val hasPrefix:@"file://"]) {
     url = [NSURL URLWithString:val];
   }
   else {

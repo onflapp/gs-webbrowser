@@ -88,7 +88,12 @@ function sendCommand(cmd) {
 
 CMD = {
   'LOAD': function(val) {
-    window.mywebview.setAttribute('src', val);
+    if (val.indexOf('file:///') == 0) {
+      window.mywebview.setAttribute('src', 'http://localhost:2222' + val.substr(7));
+    }
+    else {
+      window.mywebview.setAttribute('src', val);
+    }
   },
   'BACK': function(val) {
     window.mywebview.back();

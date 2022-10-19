@@ -76,6 +76,17 @@
   }
 }
 
+- (void) openDocument: (id)sender {
+  NSOpenPanel* panel = [NSOpenPanel openPanel];
+  [panel setAllowsMultipleSelection: NO];
+  [panel setCanChooseDirectories: NO];
+
+  if ([panel runModalForTypes:nil] == NSOKButton) {
+    NSString* fileName = [[panel filenames] firstObject];
+    [self application:NSApp openFile:fileName];
+  }
+}
+
 - (BOOL) application: (NSApplication *)application
             openFile: (NSString *)fileName {
 

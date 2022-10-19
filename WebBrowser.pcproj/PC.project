@@ -25,7 +25,8 @@
 	"DownloadPanel.m",
 	"LinkPanel.m",
 	"BrowserWindow.m",
-	"BrowserApp.m"
+	"BrowserApp.m",
+	"LocalFileServer.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -48,7 +49,8 @@
 	"DownloadPanel.h",
 	"LinkPanel.h",
 	"BrowserWindow.h",
-	"BrowserApp.h"
+	"BrowserApp.h",
+	"LocalFileServer.h"
     );
     IMAGES = (
 	"Home.tiff",

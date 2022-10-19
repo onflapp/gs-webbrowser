@@ -7,7 +7,7 @@
 @implementation ChromeWebView
 
 - (id) initWithFrame:(NSRect)r {
-  self = [super initWithFrame:r];  
+  self = [super initWithFrame:r];
   
   chromeController = [[ChromeController alloc]init];
   [chromeController ensureChromeControllerIsReady:self];

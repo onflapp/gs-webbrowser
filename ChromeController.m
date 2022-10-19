@@ -1,5 +1,7 @@
 #import "ChromeController.h"
 
+static LocalFileServer* fileServer = nil;
+
 @implementation ChromeController
 
 - (id) init {
@@ -10,6 +12,7 @@
   pidfile = [config stringByAppendingPathComponent:@"WebBrowser/controller.pid"];
   [pidfile retain];
   
+  
   return self;
 }
 
@@ -17,11 +20,16 @@
   [pidfile release];
   pidfile = nil;
   running = NO;
-
+  
   [super dealloc];
 }
 
 - (void) ensureChromeControllerIsReady:(ChromeControllerDelegate*) del {
+  if (fileServer == nil) {
+    fileServer = [[LocalFileServer alloc] init];
+    [fileServer start];
+  }
+
   if (!pidfile || !running) return;
 
   NSInteger p = [self processPort];

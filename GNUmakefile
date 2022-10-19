@@ -62,7 +62,8 @@ FindPanel.h \
 DownloadPanel.h \
 LinkPanel.h \
 BrowserWindow.h \
-BrowserApp.h
+BrowserApp.h \
+LocalFileServer.h
 
 #
 # Objective-C Class files
@@ -80,7 +81,8 @@ FindPanel.m \
 DownloadPanel.m \
 LinkPanel.m \
 BrowserWindow.m \
-BrowserApp.m
+BrowserApp.m \
+LocalFileServer.m
 
 #
 # Other sources
