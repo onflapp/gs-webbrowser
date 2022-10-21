@@ -12,6 +12,8 @@
   chromeController = [[ChromeController alloc]init];
   [chromeController ensureChromeControllerIsReady:self];
 
+  viewZoom = 1;
+
   return self;
 }
 
@@ -182,6 +184,21 @@
 
 - (void) goForward:(id) sender {
   [self sendCommand:@"FORWARD"];
+}
+
+- (void) performZoomAction:(id) sender {
+  if ([sender tag] == 1) {
+    viewZoom += 0.1;
+    if (viewZoom > 2) viewZoom = 2;
+  }
+  else if ([sender tag] == -1) {
+    viewZoom -= 0.1;
+    if (viewZoom < 0.5) viewZoom = 0.5;
+  }
+  else {
+    viewZoom = 1;
+  }
+  [self sendCommand:[NSString stringWithFormat:@"ZOOM:%f", viewZoom]];
 }
 
 - (void) performFindPanelAction:(id) sender {

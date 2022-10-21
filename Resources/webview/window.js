@@ -104,6 +104,9 @@ CMD = {
   'RELOAD': function(val) {
     window.mywebview.reload();
   },
+  'ZOOM': function(val) {
+    window.mywebview.setZoom(Number.parseFloat(val));
+  },
   'COPY': function(val) {
     window.mywebview.executeScript({code:'document.execCommand("copy")'});
   },

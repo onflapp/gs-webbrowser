@@ -11,7 +11,7 @@
     };
     FirstResponder = {
 	Actions = (
-	    "newAction:",
+	    "performZoomAction:",
 	    "orderFrontFontPanel:",
 	    "showPrefPanel:"
 	);

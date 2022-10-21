@@ -63,6 +63,10 @@
   [webView goForward:sender];
 }
 
+- (void) performZoomAction:(id) sender {
+  [webView performZoomAction:sender];
+}
+
 - (void) setURL:(NSURL*) url {
   if (!url) return;
   

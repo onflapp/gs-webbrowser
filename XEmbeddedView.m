@@ -393,9 +393,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
         XSync(xdisplay, True);
         grabbing_mouse = NO;
 
-        if (e.xbutton.button == Button1 || 
-            e.xbutton.button == Button2 ||
-            e.xbutton.button == Button3) {
+        if (e.xbutton.button == Button1 || [NSApp isActive]) {
 
           [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
           [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];

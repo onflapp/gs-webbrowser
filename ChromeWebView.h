@@ -18,6 +18,8 @@
   ChromeController* chromeController;
   BOOL ready;
   NSURL* initialURL;
+
+  CGFloat viewZoom;
 }
 
 - (void) setDelegate:(id) del;
@@ -28,6 +30,7 @@
 - (void) stopLoading:(id) sender;
 - (void) goBack:(id) sender;
 - (void) goForward:(id) sender;
+- (void) performZoomAction:(id) sender;
 
 @end
 
