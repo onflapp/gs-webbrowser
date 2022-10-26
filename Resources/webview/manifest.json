@@ -6,6 +6,8 @@
   "permissions": [
     "download",
     "webview",
+    "clipboardRead",
+    "clipboardWrite",
     {"fileSystem": ["read", "write"]}
   ],
   "offline_enabled": true,

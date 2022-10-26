@@ -364,7 +364,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   while (1) {
     XNextEvent(d, &e);
 
-    if (e.type == EnterNotify && e.xcrossing.mode == NotifyNormal) {
+    if (e.type == EnterNotify) {
       XGetInputFocus(d, &wf, &wr);
       if (wf != None && wf != we) {
         NSLog(@"M - GRAB");
@@ -375,41 +375,39 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
         grabbing_keys = YES;
       }
     }
-    else if (e.type == LeaveNotify && e.xcrossing.mode == NotifyNormal) {
+    else if (e.type == LeaveNotify) {
       if (grabbing_mouse) {
-        NSLog(@"M - UN GRAB %d %d", e.xcrossing.mode, e.xcrossing.focus);
+        NSLog(@"M - UN GRAB");
         XUngrabButton(d, AnyButton, AnyModifier, we);
         XUngrabKey(d, AnyKey, AnyModifier, we);
         XFlush(d);
         grabbing_mouse = NO;
       }
     }
-    else if (e.type == LeaveNotify && e.xcrossing.mode == NotifyUngrab) {
-      grabbing_mouse = NO;
-    }
     else if (e.type == ButtonPress) {
-      if (grabbing_mouse) {
-        XUngrabButton(d, AnyButton, AnyModifier, we);
-        XSync(xdisplay, True);
-        grabbing_mouse = NO;
-
-        if (e.xbutton.button == Button1 || [NSApp isActive]) {
-
-          [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
-          [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
-
-          NSLog(@"XSetInputFocus %x", we);
-          sendclientmsg(d, root, ignore_focus, 1);
-          usleep(200000);
-          
-          XSetInputFocus(d, we, RevertToParent, CurrentTime);
+      if (e.xbutton.button == Button1 || [NSApp isActive]) {
+        if (grabbing_mouse) {
+          NSLog(@"M - UN GRAB");
+          XUngrabButton(d, AnyButton, AnyModifier, we);
           XSync(xdisplay, True);
-
-          usleep(200000);
-          sendclientmsg(d, root, ignore_focus, 0);
-
-          [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
+          grabbing_mouse = NO;
         }
+
+
+        [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
+        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+
+        NSLog(@"XSetInputFocus %x", we);
+        sendclientmsg(d, root, ignore_focus, 1);
+        usleep(200000);
+          
+        XSetInputFocus(d, we, RevertToParent, CurrentTime);
+        XSync(xdisplay, True);
+
+        usleep(200000);
+        sendclientmsg(d, root, ignore_focus, 0);
+
+        [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
       }
       XAllowEvents(d, ReplayPointer, e.xbutton.time);
     }
