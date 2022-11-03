@@ -34,6 +34,8 @@
   IBOutlet ChromeWebView* webView;
   IBOutlet NSTextField* addressField;
   IBOutlet NSTextField* statusField;
+  
+  NSString* currentURL;
 }
 
 - (void) loadLocation:(id) sender;

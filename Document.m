@@ -46,6 +46,7 @@
 }
 
 - (void) dealloc {
+  RELEASE(currentURL);
   [super dealloc];
 }
 
@@ -68,6 +69,9 @@
 }
 
 - (void) setURL:(NSURL*) url {
+  RELEASE(currentURL);
+  currentURL = nil;
+  
   if (!url) return;
   
   //[[webView settings] mergeFromDictionary:[MYConfig valueForKey:@"WEBVIEW"]];
@@ -95,6 +99,10 @@
   [self setURL:url];
 }
 
+- (NSString*) provideLinkForDragging {
+  return currentURL;
+}
+
 - (void) webView:(id)webView didStartLoading:(NSURL*) url {
   [statusField setStringValue:[NSString stringWithFormat:@"loading %@", url]];
 }
@@ -104,6 +112,8 @@
   NSString* host = [url host];
   if (!host) host = @"empty page";
   [statusField setStringValue:[NSString stringWithFormat:@"%@ - loaded", host]];
+  
+  ASSIGN(currentURL, [url description]);
 }
 
 - (void) webView:(id)webView didChangeTitle:(NSString*) title {

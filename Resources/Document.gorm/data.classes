@@ -70,6 +70,14 @@
 	);
 	Super = NSView;
     };
+    LinkIcon = {
+	Actions = (
+	);
+	Outlets = (
+	    delegate
+	);
+	Super = NSImageView;
+    };
     WebView = {
 	Actions = (
 	);
