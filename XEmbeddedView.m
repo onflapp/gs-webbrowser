@@ -392,22 +392,23 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
           XSync(xdisplay, True);
           grabbing_mouse = NO;
         }
+        
+        if (wf != None && wf != we) {
+          [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
+          [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
 
+          NSLog(@"XSetInputFocus %x", we);
+          sendclientmsg(d, root, ignore_focus, 1);
+          usleep(200000);
+            
+          XSetInputFocus(d, we, RevertToParent, CurrentTime);
+          XSync(xdisplay, True);
 
-        [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
-        [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
+          usleep(200000);
+          sendclientmsg(d, root, ignore_focus, 0);
 
-        NSLog(@"XSetInputFocus %x", we);
-        sendclientmsg(d, root, ignore_focus, 1);
-        usleep(200000);
-          
-        XSetInputFocus(d, we, RevertToParent, CurrentTime);
-        XSync(xdisplay, True);
-
-        usleep(200000);
-        sendclientmsg(d, root, ignore_focus, 0);
-
-        [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
+          [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
+        }
       }
       XAllowEvents(d, ReplayPointer, e.xbutton.time);
     }
