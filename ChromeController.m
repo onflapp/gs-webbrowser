@@ -66,6 +66,10 @@ static LocalFileServer* fileServer = nil;
   running = NO;
 }
 
+- (NSInteger) fileServerPort {
+  return [fileServer serverPort];
+}
+
 - (void) launchProcess {
   NSString* wp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"webview"];
   NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];

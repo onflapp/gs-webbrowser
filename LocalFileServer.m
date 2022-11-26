@@ -32,8 +32,11 @@
   return self;
 }
 
+- (NSInteger) serverPort {
+  return [[server socketLocalService]integerValue];
+}
 - (void) start {
-  server = [NSFileHandle fileHandleAsServerAtAddress:@"127.0.0.1" service:@"2222" protocol:@"tcp"];
+  server = [NSFileHandle fileHandleAsServerAtAddress:@"127.0.0.1" service:@"0" protocol:@"tcp"];
 
 
   NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
@@ -41,7 +44,7 @@
          selector:@selector(receiveIncomingConnectionNotification:)     
              name:NSFileHandleConnectionAcceptedNotification object:server];
 
-  NSLog(@"start server");
+  NSLog(@"start local server %@", [server socketLocalService]);
   [server acceptConnectionInBackgroundAndNotify];
   [server retain];
 }

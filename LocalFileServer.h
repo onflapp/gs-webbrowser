@@ -33,6 +33,7 @@
 }
 
 - (void) start;
+- (NSInteger) serverPort;
 
 @end
 
