@@ -11,6 +11,8 @@
 #import "AppController.h"
 #import "common.h"
 
+#import "STScriptingSupport.h"
+
 @implementation AppController
 
 + (void) initialize {
@@ -42,6 +44,10 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotif {
   [NSApp setServicesProvider:self];
+
+  if([NSApp isScriptingSupported]) {
+    [NSApp initializeApplicationScripting];
+  }
 }
 
 - (BOOL) applicationShouldTerminate:(id)sender {

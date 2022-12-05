@@ -27,7 +27,9 @@
 	"BrowserWindow.m",
 	"BrowserApp.m",
 	"LocalFileServer.m",
-	"LinkIcon.m"
+	"LinkIcon.m",
+	"Document+scripting.m",
+	"STScriptingSupport.m"
     );
     COMPILEROPTIONS = "";
     CPPOPTIONS = "";
@@ -52,7 +54,8 @@
 	"BrowserWindow.h",
 	"BrowserApp.h",
 	"LocalFileServer.h",
-	"LinkIcon.h"
+	"LinkIcon.h",
+	"STScriptingSupport.h"
     );
     IMAGES = (
 	"Home.tiff",
@@ -81,7 +84,9 @@
     MAKEFILEDIR = "$(GNUSTEP_MAKEFILES)";
     "OBJC_COMPILEROPTIONS" = "";
     "OTHER_RESOURCES" = (
-	webview
+	webview,
+	"ApplicationScripting.xlp",
+	"ScriptingInfo.plist"
     );
     "OTHER_SOURCES" = (
 	"WebBrowser_main.m",

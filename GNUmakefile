@@ -42,7 +42,9 @@ Resources/Home.tiff \
 Resources/Left.tiff \
 Resources/Right.tiff \
 Resources/WebBrowser.tiff \
-Resources/webview 
+Resources/webview \
+Resources/ApplicationScripting.xlp \
+Resources/ScriptingInfo.plist 
 
 
 #
@@ -64,7 +66,8 @@ LinkPanel.h \
 BrowserWindow.h \
 BrowserApp.h \
 LocalFileServer.h \
-LinkIcon.h
+LinkIcon.h \
+STScriptingSupport.h
 
 #
 # Objective-C Class files
@@ -84,7 +87,9 @@ LinkPanel.m \
 BrowserWindow.m \
 BrowserApp.m \
 LocalFileServer.m \
-LinkIcon.m
+LinkIcon.m \
+Document+scripting.m \
+STScriptingSupport.m
 
 #
 # Other sources
