@@ -72,6 +72,11 @@
   }
 }
 
+- (BOOL)application: (NSApplication*)theApp
+	          openURL: (NSURL*)url {
+    return [self application:NSApp openFile:[url description]];
+}
+
 - (void)openURL:(NSPasteboard *)pboard
        userData:(NSString *)userData
           error:(NSString **)error  {
