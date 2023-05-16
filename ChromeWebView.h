@@ -18,6 +18,7 @@
   ChromeController* chromeController;
   BOOL ready;
   NSURL* initialURL;
+  NSString* __jsretval;
 
   CGFloat viewZoom;
 }
@@ -27,6 +28,7 @@
 
 - (void) loadURL:(NSURL*) url;
 
+- (NSString*) executeJavaScript:(NSString*) js;
 - (void) stopLoading:(id) sender;
 - (void) goBack:(id) sender;
 - (void) goForward:(id) sender;

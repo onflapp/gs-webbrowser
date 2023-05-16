@@ -28,6 +28,22 @@
 #include "X11/Xutil.h"
 #include "X11/keysymdef.h"
 
+void save_found_wmclass(char* wmname, char* wmclass) {
+  NSUserDefaults* cfg = [NSUserDefaults standardUserDefaults];
+
+  if (wmclass) {
+    NSString* str = [[NSString alloc]initWithCString:wmclass];
+    [cfg setValue:str forKey:@"xembedded_last_wmclass"];
+    [str release];
+  }
+
+  if (wmname) {
+    NSString* str = [[NSString alloc]initWithCString:wmname];
+    [cfg setValue:str forKey:@"xembedded_last_wmname"];
+    [str release];
+  }
+}
+
 Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   Window *children;
   Window parent;
@@ -38,7 +54,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   int rv;
   unsigned long nitems;
   unsigned long bytes_after;
-  unsigned char *prop;
+  unsigned char *prop_name;
+  unsigned char *prop_class;
   XWindowAttributes wattrs;
   XClassHint whints;
 
@@ -51,6 +68,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   
   for (windowCount = 0; result && windowCount < nchildren; windowCount++) {
     Window win = children[windowCount];
+    prop_class = NULL;
+    prop_name = NULL;
     
     rv = XGetWindowAttributes(dpy, win, &wattrs);
     if (rv && wattrs.map_state == IsViewable) {
@@ -86,12 +105,13 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        &actual_type,
                        &actual_format, &nitems,
                        &bytes_after,
-                       &prop);
+                       &prop_class);
                        
-    if (rv == Success && prop) {
+    if (rv == Success && prop_class) {
       //NSLog(@"CLASS >>>> %x %s", win, prop);
-      if (strcmp(prop, wmclass) == 0) {
+      if (strcmp(prop_class, wmclass) == 0) {
         found = win;
+        save_found_wmclass(NULL, prop_class);
         break;
       }
     }
@@ -101,12 +121,13 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        &actual_type,
                        &actual_format, &nitems,
                        &bytes_after,
-                       &prop);
+                       &prop_name);
                        
-    if (rv == Success && prop) {
+    if (rv == Success && prop_name) {
       //NSLog(@"NAME >>>> %x %s", win, prop);
-      if (strcmp(prop, wmclass) == 0) {
+      if (strcmp(prop_name, wmclass) == 0) {
         found = win;
+        save_found_wmclass(prop_name, prop_class);
         break;
       }
     }
@@ -213,7 +234,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 - (BOOL) becomeFirstResponder {
   if (!isactive) {
     isactive = YES;
-    NSLog(@"FOCUS %x", self);
+    //NSLog(@"FOCUS %x", self);
 
     /*
     [NSApp delayDeactivation];
@@ -249,7 +270,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   
   XMoveResizeWindow(xdisplay, xwindowid, r.origin.x, r.origin.y, r.size.width, r.size.height);
   XFlush(xdisplay);
-  NSLog(@"resized");
 }
 
 - (Window) embededXWindowID {
@@ -367,7 +387,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     if (e.type == EnterNotify) {
       XGetInputFocus(d, &wf, &wr);
       if (wf != None && wf != we) {
-        NSLog(@"M - GRAB");
+        //NSLog(@"M - GRAB");
         XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
         XGrabKey(d, AnyKey, AnyModifier, we, 1, GrabModeAsync, GrabModeAsync);
         XFlush(d);
@@ -377,7 +397,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     }
     else if (e.type == LeaveNotify) {
       if (grabbing_mouse) {
-        NSLog(@"M - UN GRAB");
+        //NSLog(@"M - UN GRAB");
         XUngrabButton(d, AnyButton, AnyModifier, we);
         XUngrabKey(d, AnyKey, AnyModifier, we);
         XFlush(d);
@@ -387,7 +407,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     else if (e.type == ButtonPress) {
       if (e.xbutton.button == Button1 || [NSApp isActive]) {
         if (grabbing_mouse) {
-          NSLog(@"M - UN GRAB");
+          //NSLog(@"M - UN GRAB");
           XUngrabButton(d, AnyButton, AnyModifier, we);
           XSync(xdisplay, True);
           grabbing_mouse = NO;
@@ -397,7 +417,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
           [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
           [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
 
-          NSLog(@"XSetInputFocus %x", we);
+          //NSLog(@"XSetInputFocus %x", we);
           sendclientmsg(d, root, ignore_focus, 1);
           usleep(200000);
             

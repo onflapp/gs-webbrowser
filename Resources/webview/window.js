@@ -1,4 +1,5 @@
 window.addEventListener('message', function(evt) {
+  debugger;
   if (evt.origin.indexOf('chrome-extension://') == 0) {
     receiveCommand(evt.data);
   }
@@ -121,5 +122,12 @@ CMD = {
   },
   'FINDPREV': function(val) {
     window.mywebview.find(val, {backward:true});
+  },
+  'EXEC': function(val) {
+    var code = unescape(val);    
+    var cb = function(rv) {
+      sendCommand('ON_RETURN:'+escape(rv));
+    };
+    window.mywebview.executeScript({ code:code }, cb);
   }
 };

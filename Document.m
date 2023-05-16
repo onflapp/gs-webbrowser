@@ -25,12 +25,17 @@
 #import "Document.h"
 #import "common.h"
 
+static NSWindow* _lastMainWindow;
+
 @implementation Document
+
++ (Document*) lastActiveDocument {
+  return (Document*)[_lastMainWindow delegate];
+}
 
 - (id) init {
   self = [super init];
   [NSBundle loadNibNamed:@"Document" owner:self];
-  [window setFrameAutosaveName:@"browser_window"];
   
   for (NSView* view in [[window contentView] subviews]) {
     if ([view isKindOfClass:[ChromeWebView class]]) {
@@ -41,13 +46,32 @@
 
   [webView setDelegate:self];
   
-  [window makeKeyAndOrderFront:self];
   return self;
 }
 
 - (void) dealloc {
   RELEASE(currentURL);
   [super dealloc];
+}
+
+- (NSWindow*) window {
+  return window;
+}
+
+- (void) showWindow {
+  [window setFrameUsingName:@"browser_window"];
+  [window setFrameAutosaveName:@"browser_window"];
+
+  if (!_lastMainWindow) _lastMainWindow = [[NSApp orderedWindows] lastObject];
+  if (_lastMainWindow) {
+    NSRect  r = [_lastMainWindow frame];
+    NSPoint p = r.origin;
+
+    p.x += 24;
+    [window setFrameOrigin:p];
+  }
+
+  [window makeKeyAndOrderFront:self];
 }
 
 - (void) goHome:(id) sender {
@@ -66,6 +90,10 @@
 
 - (void) performZoomAction:(id) sender {
   [webView performZoomAction:sender];
+}
+
+- (NSString*) currentURL {
+  return currentURL;
 }
 
 - (void) setURL:(NSURL*) url {
@@ -101,6 +129,17 @@
 
 - (NSString*) provideLinkForDragging {
   return currentURL;
+}
+
+- (void) windowDidBecomeMain: (NSNotification*)aNotification {
+  _lastMainWindow = window;
+}
+
+- (void) windowWillClose:(NSNotification *)notification {
+  if (_lastMainWindow == window) _lastMainWindow = nil;
+
+  [window setDelegate: nil];
+  [self release];
 }
 
 - (void) webView:(id)webView didStartLoading:(NSURL*) url {

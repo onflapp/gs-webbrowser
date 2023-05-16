@@ -38,11 +38,17 @@
   NSString* currentURL;
 }
 
++ (Document*) lastActiveDocument;
+
+- (NSWindow*) window;
+
 - (void) loadLocation:(id) sender;
 - (void) goBack:(id) sender;
 - (void) goForward:(id) sender;
 
+- (NSString*) currentURL;
 - (void) setURL:(NSURL*) url;
+- (void) showWindow;
 
 @end
 

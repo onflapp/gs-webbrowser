@@ -4,6 +4,12 @@ function cleanup {
   rm "$LOCK" 2>/dev/null
 }
 
+XWMC=`defaults read WebBrowser xembedded_last_wmclass 2>/dev/null`
+read -r a b c <<<"$XWMC"
+if [ -n "$c" ];then
+  wdwrite WMWindowAttributes "$c.*" '{ NoAppIcon = Yes; Unfocusable = Yes; }'
+fi
+
 trap cleanup SIGINT SIGTERM
 
 CHROME=`type -p google-chrome`

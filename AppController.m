@@ -68,6 +68,7 @@
     NSString* search = [NSString stringWithFormat:@"%@%@", [MYConfig valueForKey:@"SEARCH_ADDRESS"], text];
     NSURL* url = [NSURL URLWithString:search];
     Document* doc = [[Document alloc] init];
+    [doc showWindow];
     [doc setURL:url];
   }
 }
@@ -115,6 +116,7 @@
   
   if (url) {
     Document* doc = [[Document alloc] init];
+    [doc showWindow];
     [doc setURL:url];
   }
   
@@ -130,6 +132,7 @@
 
 - (void) newDocument: (id)sender {
   Document *doc = [[Document alloc] init];
+  [doc showWindow];
 }
 
 @end

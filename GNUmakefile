@@ -89,7 +89,8 @@ BrowserApp.m \
 LocalFileServer.m \
 LinkIcon.m \
 Document+scripting.m \
-STScriptingSupport.m
+STScriptingSupport.m \
+AppController+scripting.m
 
 #
 # Other sources

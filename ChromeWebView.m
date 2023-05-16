@@ -24,6 +24,9 @@
   [initialURL release];
   initialURL = nil;
 
+  [__jsretval release];
+  __jsretval = nil;
+
   [super dealloc];
 }
 
@@ -62,6 +65,12 @@
     }
   }
   if ([nm isEqual:@"ON_FOCUS"]) {
+  }
+  if ([nm isEqual:@"ON_RETURN"]) {
+    [__jsretval release];
+
+    __jsretval = [val stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    [__jsretval retain];
   }
   if ([nm isEqual:@"ON_LOADING_START"]) {
     [delegate webView:self didStartLoading:[NSURL URLWithString:val]];
@@ -117,6 +126,25 @@
     [initialURL release];
     initialURL = [url retain];
   }
+}
+
+- (NSString*) executeJavaScript:(NSString*) js {
+  if (!js) return nil;
+
+  [__jsretval release];
+  __jsretval = nil;
+
+  NSString* code = [js stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  [self sendCommand:[NSString stringWithFormat:@"EXEC:%@", code]];
+
+  for (NSInteger i = 0; i < 10; i++) {
+    if (__jsretval) break;
+
+    NSDate* limit = [NSDate dateWithTimeIntervalSinceNow:0.1];
+    [[NSRunLoop currentRunLoop] runUntilDate: limit];
+  }
+
+  return __jsretval;
 }
 
 - (id)validRequestorForSendType:(NSString *)st
