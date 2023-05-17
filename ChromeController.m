@@ -17,6 +17,9 @@ static LocalFileServer* fileServer = nil;
 }
 
 - (void) dealloc {
+  [task release];
+  task = nil;
+
   [pidfile release];
   pidfile = nil;
   running = NO;
@@ -74,12 +77,31 @@ static LocalFileServer* fileServer = nil;
   NSString* wp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"webview"];
   NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];
 
-  NSTask* task = [[NSTask alloc] init];
+  task = [[NSTask alloc] init];
   [task setLaunchPath:@"/bin/bash"];
   [task setArguments:[NSArray arrayWithObjects:path, nil]];
   [task setCurrentDirectoryPath:wp];
 
+  [[NSNotificationCenter defaultCenter]
+	  addObserver:self
+	     selector:@selector(taskDidTerminate:)
+	         name:NSTaskDidTerminateNotification
+	       object:task];
+
   [task launch];
+}
+
+- (void) taskDidTerminate:(NSNotification*) not {
+  NSInteger rv = [task terminationStatus];
+  NSLog(@"task has terminated %d", rv);
+
+  if (rv == 10) {
+	  NSRunAlertPanel(@"Unable to start the chrome process",@"Web Browser app expects to find one of these commands:\n google-chrome, chromium, chromium-browser or chrome",nil,nil,nil);
+    running = NO;
+  }
+
+  [task release];
+  task = nil;
 }
 
 @end

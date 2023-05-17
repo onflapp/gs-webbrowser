@@ -33,8 +33,7 @@
   IBOutlet NSTextField* homeAddress;
   IBOutlet NSTextField* searchAddress;
   IBOutlet NSTextField* userAgent;
-  IBOutlet NSButton* javaScript;
-  IBOutlet NSButton* developmentTools;
+  IBOutlet NSButton* showOnLaunch;
 }
 
 - (void) show:(id) sender;

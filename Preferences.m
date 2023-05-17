@@ -35,8 +35,9 @@
 - (void) show:(id) sender {
   [homeAddress setStringValue:[MYConfig valueForKey:@"HOME_ADDRESS"]];
   [searchAddress setStringValue:[MYConfig valueForKey:@"SEARCH_ADDRESS"]];
+  [showOnLaunch setIntegerValue:[[MYConfig valueForKeyPath:@"SHOW_ON_LAUNCH"] integerValue]];
+
   [userAgent setStringValue:[MYConfig valueForKeyPath:@"WEBVIEW.USER_AGENT"]];
-  [javaScript setIntegerValue:[[MYConfig valueForKeyPath:@"WEBVIEW.JAVASCRIPT"] integerValue]];
 
   [window makeKeyAndOrderFront:sender];
 }
@@ -44,10 +45,10 @@
 - (void) save:(id) sender {
   [MYConfig setValue:[homeAddress stringValue] forKey:@"HOME_ADDRESS"];
   [MYConfig setValue:[searchAddress stringValue] forKey:@"SEARCH_ADDRESS"];
+  [MYConfig setValue:[NSNumber numberWithInteger:[showOnLaunch integerValue]] forKey:@"SHOW_ON_LAUNCH"];
   
   NSMutableDictionary* webview = [NSMutableDictionary dictionary];
   [webview setValue:[userAgent stringValue] forKey:@"USER_AGENT"];
-  [webview setValue:[NSNumber numberWithInteger:[javaScript integerValue]] forKey:@"JAVASCRIPT"];
   
   [MYConfig setValue:webview forKey:@"WEBVIEW"];
 }

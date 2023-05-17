@@ -2,6 +2,7 @@
 
 function cleanup {
   rm "$LOCK" 2>/dev/null
+  exit 0
 }
 
 XWMC=`defaults read WebBrowser xembedded_last_wmclass 2>/dev/null`
@@ -19,7 +20,7 @@ CHROME=`type -p google-chrome`
 
 if [ -z "$CHROME" ];then
   echo "no google-chrome|chromium|chromium-browser|chrome found!"
-  exit 1
+  exit 10
 fi
 
 DDIR="$HOME/Library/WebBrowser/Profile"

@@ -34,8 +34,7 @@
 	    homeAddress,
 	    searchAddress,
 	    userAgent,
-	    javaScript,
-	    developerTools
+	    showOnLaunch
 	);
 	Super = NSObject;
     };

@@ -24,6 +24,7 @@
   [defaults setValue:webview forKey:@"WEBVIEW"];
   [defaults setValue:@"https://www.google.com/search?q=" forKey:@"SEARCH_ADDRESS"];
   [defaults setValue:@"https://github.com/onflapp/gs-desktop" forKey:@"HOME_ADDRESS"];
+  [defaults setValue:[NSNumber numberWithInteger:1] forKey:@"SHOW_ON_LAUNCH"];
   
   [[NSUserDefaults standardUserDefaults] registerDefaults: defaults];
   [[NSUserDefaults standardUserDefaults] synchronize];
@@ -131,7 +132,14 @@
 }
 
 - (void) newDocument: (id)sender {
+  NSURL *url = [NSURL URLWithString:[MYConfig valueForKey:@"HOME_ADDRESS"]];
+  NSInteger show = [[MYConfig valueForKey:@"SHOW_ON_LAUNCH"]integerValue];
+
   Document *doc = [[Document alloc] init];
+  if (show && url) {
+    [doc setURL:url];
+  }
+
   [doc showWindow];
 }
 

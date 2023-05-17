@@ -9,6 +9,7 @@
 @end
 
 @interface ChromeController : NSObject {
+  NSTask* task;
   NSString* pidfile;
   BOOL running;
 }
