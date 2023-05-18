@@ -16,8 +16,8 @@ Yet, you'll get full GNUstep experience.
 
 ### Prerequisites
 
-As the app is just a wrapper, you obviously need to have Chrome properly installed.
-This can be accomplished in different way depending what version or flavour of your Linux distro you are running on.
+As the app is just a wrapper, it obviously needs Chrome properly installed.
+This can be done differently depending on what version or flavour of your Linux distro you are running.
 
 To install Chrome manually (x64), you could do the following:
 
@@ -35,13 +35,13 @@ chromium-browser
 chrome
 ```
 
-WebBrowser.app relies on [Chrome extensions API](ttps://developer.chrome.com/docs/extensions/reference/) 
-and on Chrome's ability to load extensions as web-apps (--load-and-launch-app).
+WebBrowser.app relies on [Chrome extension API](https://developer.chrome.com/docs/extensions/reference/) 
+and on Chrome's ability to load extensions as web-apps (`--load-and-launch-app`).
 This functionality might get removed from Chrome as it has been marked as deprecated, but so far so good.
 
 ### Future Direction
 
-Although the browser is fully functional, it still has rough some edges.
+Although the browser is fully functional as of today, it still has many rough edges.
 
 One very annoying thing is that it fails to capture the Chrome window on start up sometimes.
 This is not a big problem as you can simply close the window and create new one, but it is annoying.
@@ -49,8 +49,6 @@ This is not a big problem as you can simply close the window and create new one,
 Improve how downloads are handled. As this functionality is not exposed by the Chrome extension API 
 in any meaning way, I had to "hack" around it. I'll have to find a better way.
 
-Drag & Drop support - this is mainly limited by how XDnd interacts with GNUsteps own drag&drop support.
-It will most likely require GNUstep backend code to be enhanced to make it work.
+Drag & Drop support - this is mainly limited by how XDnd interacts with GNUsteps own drag & drop support. It will most likely require GNUstep backend code to be enhanced to make it work.
 
-Improve the GUI. The current user interface is very basic, however as it is all GNUstep, new functionality
-should be easy to add.
+Improve the GUI. The current user interface is very basic, however as it is all GNUstep, new functionality should be easy to add.
