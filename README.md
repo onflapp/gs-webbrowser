@@ -1,8 +1,8 @@
 # WebBrowser
 
-WebBrowser.app is based on Google Chrome and specifically created for [GNUstep Desktop](https://github.com/onflapp/gs-desktop/tree/main).
+WebBrowser.app is _based on Google Chrome_ and specifically created for [GNUstep Desktop](https://github.com/onflapp/gs-desktop/tree/main).
 
-It uses XEmbedding + Chrome extensions API to accomplish its goal.
+It uses XEmbedding + Chrome extension API to accomplish its goal.
 One huge advantage of this approach is that it uses Google's own binary, 
 which means no compromises!
 
