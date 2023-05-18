@@ -1,11 +1,12 @@
-# WebBrowser.app
+# WebBrowser
 
-Web browser based on Google Chrome made for [GNUstep Desktop].
-It uses XEmbedding + uses Chrome extensions API to accomplish its goal.
+WebBrowser.app is based on Google Chrome and specifically created for [GNUstep Desktop](https://github.com/onflapp/gs-desktop/tree/main).
+
+It uses XEmbedding + Chrome extensions API to accomplish its goal.
 One huge advantage of this approach is that it uses Google's own binary, 
-which means: no compromises!
-It will play Netflix or log into your Google account without complaining.
+which means no compromises!
 
+It will play Netflix or let you log into your Google account without complaining.
 Yet, you'll get full GNUstep experience.
 
 - GNUstep UI with proper menus
