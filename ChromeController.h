@@ -14,8 +14,11 @@
   BOOL running;
 }
 
++ (ChromeController*) sharedInstance;
 - (void) ensureChromeControllerIsReady:(ChromeControllerDelegate*) del;
+- (NSInteger) fileServerPort;
 - (void) stopTrying;
+- (void) closeProcess;
 
 @end
 

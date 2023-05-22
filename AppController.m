@@ -52,6 +52,9 @@
 }
 
 - (BOOL) applicationShouldTerminate:(id)sender {
+  ChromeController* ctrl = [ChromeController sharedInstance];
+  [ctrl closeProcess];
+  [ctrl release];
   return YES;
 }
 

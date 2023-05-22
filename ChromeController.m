@@ -1,6 +1,7 @@
 #import "ChromeController.h"
 
 static LocalFileServer* fileServer = nil;
+static ChromeController* chromeController = nil;
 
 @implementation ChromeController
 
@@ -16,14 +17,22 @@ static LocalFileServer* fileServer = nil;
   return self;
 }
 
++ (ChromeController*) sharedInstance {
+  if (!chromeController) chromeController = [[ChromeController alloc] init];
+  return chromeController;
+}
+
 - (void) dealloc {
+  chromeController = nil;
+
   [task release];
   task = nil;
 
   [pidfile release];
   pidfile = nil;
   running = NO;
-  
+
+  NSLog(@"dealloc controller");
   [super dealloc];
 }
 
@@ -102,6 +111,22 @@ static LocalFileServer* fileServer = nil;
 
   [task release];
   task = nil;
+}
+
+- (void) closeProcess {
+  if (!pidfile || !running) return;
+
+  NSInteger p = [self processPort];
+  if (p > 0) {
+    NSLog(@"terminate %d", p);
+    NSFileHandle* remote = [NSFileHandle fileHandleAsClientAtAddress:@"localhost" service:[NSString stringWithFormat:@"%ld", p] protocol:@"tcp"];
+    if (remote) {
+      NSString* ss = @"TERMINATE:\n";
+      NSData* data = [ss dataUsingEncoding:NSUTF8StringEncoding];
+      [remote writeData:data];
+      [remote closeFile];
+    }
+  }
 }
 
 @end

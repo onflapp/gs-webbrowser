@@ -9,7 +9,7 @@
 - (id) initWithFrame:(NSRect)r {
   self = [super initWithFrame:r];
   
-  chromeController = [[ChromeController alloc]init];
+  ChromeController* chromeController = [ChromeController sharedInstance];
   [chromeController ensureChromeControllerIsReady:self];
 
   viewZoom = 1;
@@ -18,9 +18,6 @@
 }
 
 - (void) dealloc {
-  [chromeController release];
-  chromeController = nil;
-
   [initialURL release];
   initialURL = nil;
 
@@ -35,10 +32,6 @@
 }
 
 - (void) destroyXWindow {
-  [chromeController stopTrying];
-  [chromeController release];
-  chromeController = nil;
-
   ready = NO;
 
   [self disconnectController];
@@ -120,6 +113,13 @@
 
 - (void) loadURL:(NSURL*) url {
   if (!url) return;
+
+  if ([[url scheme]isEqualToString:@"file"]) {
+    NSString* path = [[url description] substringFromIndex:7];
+    NSInteger port = [[ChromeController sharedInstance] fileServerPort];
+    NSString* u = [NSString stringWithFormat:@"file://%ld%@", port, path];
+    url = [NSURL URLWithString:u];
+  }
 
   if (ready) [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", url]];
   else {

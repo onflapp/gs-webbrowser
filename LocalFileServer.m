@@ -97,6 +97,9 @@
 
     data = [client availableData];
   }
+  //we don't need to receive data anymore
+  NSLog(@"HEAD %@", head);
+  [nc removeObserver:client];
 
   NSArray* ll = [head componentsSeparatedByString:@" "];
   if ([[ll objectAtIndex:0] isEqualToString:@"GET"]) {
@@ -123,7 +126,6 @@
   [client closeFile];
 
   //done
-  [nc removeObserver:client];
   [client release];
   [head release];
 

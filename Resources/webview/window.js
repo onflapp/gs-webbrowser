@@ -1,5 +1,4 @@
 window.addEventListener('message', function(evt) {
-  debugger;
   if (evt.origin.indexOf('chrome-extension://') == 0) {
     receiveCommand(evt.data);
   }
@@ -15,6 +14,7 @@ window.addEventListener('click', function(evt) {
 window.addEventListener('load', function(evt) {
   var wv = document.getElementById('main');
   window.mywebview = wv;
+  window.mylasttitle = 0;
   window.mywebviewid = 'ASGGFD-webview-'+window.location.hash.substr(1);
 
   document.title = window.mywebviewid;
@@ -24,7 +24,11 @@ window.addEventListener('load', function(evt) {
   });
   wv.addEventListener('loadstop', function(evt) {
     var u = window.mywebview.getAttribute('src');
-    sendCommand('ON_LOADING_STOP:'+(u?u:''));
+    u = u?u:'';
+    if (u.indexOf(window.myfileserver) === 0) {
+      u = 'file://'+u.substr(window.myfileserver.length);
+    }
+    sendCommand('ON_LOADING_STOP:'+u);
   });
   wv.addEventListener('message', function(evt) {
     console.log(evt);
@@ -41,6 +45,10 @@ window.addEventListener('load', function(evt) {
     console.log(evt);
   });
   wv.addEventListener('contentload', function(evt) {
+    if (window.mylasttitle === 0) {
+      checkTitle();
+    }
+  /* try to avoid injecting any code into the website
     this.executeScript({
       code: 
       'window.addEventListener("message", function(e) {' +
@@ -58,10 +66,29 @@ window.addEventListener('load', function(evt) {
     setTimeout(function() {
         wv.contentWindow.postMessage('init', '*');
     },200);
+  */
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);
+
 });
+
+function checkTitle() {
+  var cb = function(rv) {
+    var newtitle = ''+(rv?rv:'');
+    if (window.mylasttitle !== newtitle) {
+      window.mylasttitle = newtitle;
+      sendCommand('ON_TITLE:'+newtitle);
+    }
+  };
+  try {
+    window.mywebview.executeScript({ code:'window.document.title' }, cb);
+  }
+  catch(ex) {
+  }
+
+  setTimeout(checkTitle, 1000);
+}
 
 function receiveCommand(cmd) {
   console.log('received:' + cmd);
@@ -89,8 +116,14 @@ function sendCommand(cmd) {
 
 CMD = {
   'LOAD': function(val) {
-    if (val.indexOf('file:///') == 0) {
-      window.mywebview.setAttribute('src', 'http://localhost:2222' + val.substr(7));
+    if (val.indexOf('file://') == 0) {
+      var s = val.substr(7);
+      var i = s.indexOf('/');
+      var p = s.substr(0, i);
+      var f = s.substr(i);
+      var h = 'http://localhost:'+p;
+      window.myfileserver = h;
+      window.mywebview.setAttribute('src', h+f);
     }
     else {
       window.mywebview.setAttribute('src', val);
@@ -107,6 +140,9 @@ CMD = {
   },
   'ZOOM': function(val) {
     window.mywebview.setZoom(Number.parseFloat(val));
+  },
+  'CUT': function(val) {
+    window.mywebview.executeScript({code:'document.execCommand("cut")'});
   },
   'COPY': function(val) {
     window.mywebview.executeScript({code:'document.execCommand("copy")'});

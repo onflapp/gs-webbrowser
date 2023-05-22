@@ -39,6 +39,37 @@ WebBrowser.app relies on [Chrome extension API](https://developer.chrome.com/doc
 and on Chrome's ability to load extensions as web-apps (`--load-and-launch-app`).
 This functionality might get removed from Chrome as it has been marked as deprecated, but so far so good.
 
+### How does it work
+
+#### event flow
+
+```
+ExternalWebView                  Chrome App                                      Web page
+command --- socket --> background.js --- post message --> window.js --- API --> webview tag
+event   <-- socket --- background.js <-- post message --- window.js <-- API --- webview tag
+```
+
+#### initialization
+
+1. ChromeController starts chrome process (Resources/webview/start.sh)
+   Chrome tends to create background process that is reused, this makes it a bit messy.
+   The script creates empty pid file and waits for it to contain port of the Chrome app.
+
+2. The start.sh uses `--load-and-launch-app` to load Chrome app declared in manifest.json.
+
+3. The Chrome app (background.js) starts local socket server.
+   It writes its port into the pid file.
+
+4. ChromeController pickups the port number and connects to it.
+   It delegates connection to the ExternalWebView
+
+5. ExternalWebView will connect to the background.js and starts conversation.
+   New connection will create new Chrome Window (window.js).
+   Once new Chrome Window appears, it is captured by ExternalWebView and reparented into its own view.
+
+6. ExternalWebView issues commands that will be passed to the window.js. 
+   Like load page and also listens for events coming back.
+
 ### Future Direction
 
 Although the browser is fully functional as of today, it still has many rough edges.

@@ -2,15 +2,15 @@ var DEBUG = 0;
 var PORT = 0;
 
 chrome.app.runtime.onLaunched.addListener(function(evt) {
+  var hide = DEBUG?false:true;
   window.mypidfile = evt.items[0].entry;
-  if (DEBUG) {
-    chrome.app.window.create('info.html', {
-      innerBounds: {
-        width: 200,
-        height: 200
-      }
-    });
-  }
+  chrome.app.window.create('info.html', {
+    hidden:hide,
+    innerBounds: {
+      width: 200,
+      height: 200
+    }
+  });
   startServer(PORT);
 });
 
@@ -40,8 +40,16 @@ function DataConnection(sockId) {
 
   this.receiveCommand = function(cmd) {
     console.log('received: ' + cmd);
-    var cw = that.win.contentWindow;
-    cw.postMessage(cmd);
+    if (cmd == 'TERMINATE:') {
+      var wins = chrome.app.window.getAll();
+      for (var i = 0; i < wins.length; i++) {
+        wins[i].close();
+      }
+    }
+    else {
+      var cw = that.win.contentWindow;
+      cw.postMessage(cmd);
+    }
   };
 
   this.sendCommand = function(cmd) {
@@ -158,7 +166,7 @@ function waitForIO(writer, callback) {
       return;
     }
     if (writer.readyState===writer.WRITING) {
-      console.error("Write operation taking too long, aborting!"+
+      console.error("Write operation is taking too long, aborting!"+
         " (current writer readyState is "+writer.readyState+")");
       writer.abort();
     } 

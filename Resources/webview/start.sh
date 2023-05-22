@@ -43,7 +43,9 @@ echo "" > "$PIDF"
 echo "" > "$LOCK"
 
 cd "$WDIR"
-"$CHROME" --enable-widevine --user-data-dir=$DDIR --silent-launch --load-and-launch-app=`pwd` "$PIDF"
+"$CHROME" \
+  --enable-widevine --user-data-dir=$DDIR --silent-launch \
+  --load-and-launch-app=`pwd` "$PIDF" 2>/dev/null
 
 sleep 1
 cleanup
