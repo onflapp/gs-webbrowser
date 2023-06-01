@@ -42,6 +42,10 @@ window.addEventListener('load', function(evt) {
       sendCommand('ON_DOWNLOAD:'+evt.request.url);
       evt.request.allow();
     }
+    else {
+      evt.request.allow();
+    }
+    evt.preventDefault();
     console.log(evt);
   });
   wv.addEventListener('contentload', function(evt) {

@@ -8,6 +8,8 @@
     "webview",
     "clipboardRead",
     "clipboardWrite",
+    "audioCapture",
+    "videoCapture",
     {"fileSystem": ["read", "write"]}
   ],
   "offline_enabled": true,
