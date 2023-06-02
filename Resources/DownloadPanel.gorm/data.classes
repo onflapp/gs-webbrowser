@@ -2,13 +2,15 @@
     "## Comment" = "Do NOT change this file, Gorm maintains it";
     DownloadPanel = {
 	Actions = (
-	    "takeAction:"
+	    "saveFile:",
+	    "openFile:"
 	);
 	Outlets = (
 	    addressField,
 	    statusField,
 	    window,
-	    actionButton
+	    openButton,
+	    saveButton
 	);
 	Super = NSObject;
     };
@@ -25,9 +27,9 @@
     };
     FirstResponder = {
 	Actions = (
-	    "takeAction:",
 	    "findPrevious:",
-	    "newAction:",
+	    "saveFile:",
+	    "openFile:",
 	    "orderFrontFindPanel:"
 	);
 	Super = NSObject;

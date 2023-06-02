@@ -307,25 +307,30 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
 - (void) initModFilter {
   NSString* cmdkey = [[NSUserDefaults standardUserDefaults] valueForKey:@"GSFirstCommandKey"];
-  if ([cmdkey isEqualToString:@"Super_L"]) {
+  if ([cmdkey hasPrefix:@"Super_"]) {
     filterModL = XK_Super_L;
     filterModR = XK_Super_R;
     filterMod = Mod4Mask;
   }
-  else if ([cmdkey isEqualToString:@"Alt_L"]) {
+  else if ([cmdkey hasPrefix:@"Alt_"]) {
     filterModL = XK_Alt_L;
     filterModR = XK_Alt_L;
     filterMod = Mod1Mask;
   }
-  else if ([cmdkey isEqualToString:@"Meta_L"]) {
+  else if ([cmdkey hasPrefix:@"Control_"]) {
+    filterModL = XK_Control_L;
+    filterModR = XK_Control_R;
+    filterMod = ControlMask;
+  }
+  else if ([cmdkey hasPrefix:@"Meta_"]) {
     filterModL = XK_Meta_L;
     filterModR = XK_Meta_R;
     filterMod = Mod2Mask;
   }
   else {
-    filterModL = XK_Control_L;
-    filterModR = XK_Control_R;
-    filterMod = ControlMask;
+    filterModL = XK_Alt_L;
+    filterModR = XK_Alt_L;
+    filterMod = Mod1Mask;
   }
 }
 

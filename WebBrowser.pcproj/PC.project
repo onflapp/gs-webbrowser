@@ -78,7 +78,7 @@
 	"gnustep-base",
 	"gnustep-gui"
     );
-    LINKEROPTIONS = "-lX11";
+    LINKEROPTIONS = "-lX11 -ldispatch";
     "LOCALIZED_RESOURCES" = (
     );
     MAININTERFACE = "WebBrowser.gorm";

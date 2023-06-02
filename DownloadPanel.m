@@ -26,33 +26,38 @@
 
 @implementation DownloadPanel
 
-- (id) initWithURL:(NSURL*)url forWebView:(id)view {
+- (id) initWithURL:(NSURL*)url {
   self = [super init];
   [NSBundle loadNibNamed:@"DownloadPanel" owner:self];
 
   status = 0;
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(parentWindowWillClose:)
-                                               name:NSWindowWillCloseNotification
-                                             object:[view window]];
-
-  downloadDate = [[NSDate date]retain];
   downloadURL = [url retain];
-  downloads = [NSMutableDictionary new];
+
+  [openButton setEnabled:NO];
+  [saveButton setEnabled:NO];
 
   [window setTitle:@"Downloading..."];
-  [actionButton setHidden:YES];
   [addressField setStringValue:[downloadURL description]];
   [statusField setStringValue:@"waiting for download to start..."];
 
-  [self observerDownloadFolder];
-  
+  NSURLRequest* req = [NSURLRequest requestWithURL:downloadURL];
+  downloadConnection = [NSURLConnection connectionWithRequest:req delegate:self];
+  [downloadConnection retain];
+
+  tempFile = [NSString stringWithFormat:@"/tmp/%ld.tmp", [self hash]];
+  [tempFile retain];
+
+  tempFileHandle = [NSFileHandle fileHandleForWritingAtPath:tempFile];
+  [tempFileHandle retain];
+
   return self;
 }
 
-- (void) parentWindowWillClose:(NSNotification*)notification {
+- (void) windowWillClose:(NSNotification*)notification {
   status = -1;
+  [downloadConnection cancel];
+
   [window close];
   [self release];
 }
@@ -61,62 +66,54 @@
   return window;
 }
 
-- (IBAction) takeAction:(id) sender {
-  NSString* dir = [NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"];
-  NSWorkspace* ws = [NSWorkspace sharedWorkspace];
-  [ws selectFile:@"." inFileViewerRootedAtPath:dir];
+- (IBAction) openFile:(id) sender {
   [window close];
-  [self release];
 }
 
-- (void) observerDownloadFolder {
-  if (status == -1) return;
-
+- (IBAction) saveFile:(id) sender {
   NSString* dir = [NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"];
-  NSFileManager *fm = [NSFileManager defaultManager];
-  NSDirectoryEnumerator* ls = [fm enumeratorAtPath:dir];
- 
-  NSString *file;
-  while ((file = [ls nextObject])) {
-    if ([[ls fileAttributes] objectForKey:@"NSFileType"] == NSFileTypeDirectory) {
-      [ls skipDescendents];
-    }
-    else {
-      if ([[file pathExtension] isEqualToString:@"crdownload"] == YES) {
-        [statusField setStringValue:@"downloading..."];
-      }
-      else if (status == 0) {
-        NSString* path = [dir stringByAppendingPathComponent:file];
-        [downloads setValue:path forKey:file];
-      }
-      else if ([downloads valueForKey:file] == nil) {
-        NSDate* fd = [[ls fileAttributes]objectForKey:@"NSFileCreationDate"];
-        if ([fd laterDate:downloadDate]) {
-          [window setTitle:@"DONE!"];
-          [statusField setStringValue:@"new file has been downloaded"];
-          [actionButton setHidden:NO];
-          status = -1;
-          return;
-        }
-      }
-    }
-  }
+  NSSavePanel* save = [NSSavePanel savePanel];
+  NSFileManager* fm = [NSFileManager defaultManager];
+  NSWorkspace* ws = [NSWorkspace sharedWorkspace];
 
-  if (status == 0) status = 1;
-  if (status > 0) {
-    [self performSelector:@selector(observerDownloadFolder) withObject:nil afterDelay:1.0];
+  [save setDirectory:dir];
+  if ([save runModal]) {
+    NSString* fl = [save filename];
+    [fm moveItemAtPath:tempFile toPath:fl error:nil];
+    [ws selectFile:fl inFileViewerRootedAtPath:dir];
+
+    [window close];
   }
+}
+
+- (void) connection:(NSURLConnection*) con didReceiveResponse:(NSURLResponse*) resp {
+  NSLog(@">>> %@", resp);
+}
+
+- (void) connection:(NSURLConnection*) con didReceiveData:(NSData*) data {
+  [tempFileHandle writeData:data];
+}
+
+- (void) connectionDidFinishLoading:(NSURLConnection*) con {
+  [tempFileHandle closeFile];
+
+  [window setTitle:@"downloaded"];
+  [statusField setStringValue:@""];
+
+  [openButton setEnabled:YES];
+  [saveButton setEnabled:YES];
 }
 
 - (void) dealloc {
-  NSLog(@"dealloc");
+  NSLog(@"download dealloc");
   status = -1;
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-  [downloadDate release];
   [downloadURL release];
-  [downloads release];
+  [tempFile release];
+  [tempFileHandle release];
+  [downloadConnection release];
 
   [super dealloc];
 }

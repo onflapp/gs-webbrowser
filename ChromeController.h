@@ -17,6 +17,7 @@
 + (ChromeController*) sharedInstance;
 - (void) ensureChromeControllerIsReady:(ChromeControllerDelegate*) del;
 - (NSInteger) fileServerPort;
+- (void) showDebugWindow;
 - (void) stopTrying;
 - (void) closeProcess;
 

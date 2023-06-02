@@ -97,9 +97,9 @@
 }
 
 - (void) requestDownload:(NSURL*) url {
-  DownloadPanel* download = [[DownloadPanel alloc]initWithURL:url forWebView:self];
+  DownloadPanel* download = [[DownloadPanel alloc]initWithURL:url];
   NSWindow* win = [download window];
-  [[self window]addChildWindow:win ordered:NSWindowAbove];
+  //[[self window]addChildWindow:win ordered:NSWindowAbove];
   [win orderFront:self];
 }
 

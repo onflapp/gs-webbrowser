@@ -10,8 +10,12 @@ chrome.app.runtime.onLaunched.addListener(function(evt) {
       width: 200,
       height: 200
     }
+  }, function(win) {
+    window.mydebugwin = win;
+    setTimeout(function() {
+      startServer(PORT);
+    }, 500);
   });
-  startServer(PORT);
 });
 
 /*
@@ -44,6 +48,11 @@ function DataConnection(sockId) {
       var wins = chrome.app.window.getAll();
       for (var i = 0; i < wins.length; i++) {
         wins[i].close();
+      }
+    }
+    else if (cmd == 'SHOW_DEBUG:') {
+      if (window['mydebugwin']) {
+        window.mydebugwin.show();
       }
     }
     else {
@@ -84,7 +93,7 @@ function startServer(port) {
       delete connections['x'+sock];
     }
       
-    console.log('error');
+    console.log('error:' + info);
   });
 
   chrome.sockets.tcpServer.create({}, function(info) {

@@ -3,7 +3,8 @@
     AppController = {
 	Actions = (
 	    "showPrefPanel:",
-	    "newDocument:"
+	    "newDocument:",
+	    "showDebugWindow:"
 	);
 	Outlets = (
 	);
@@ -11,8 +12,9 @@
     };
     FirstResponder = {
 	Actions = (
-	    "performZoomAction:",
+	    "showDebugWindow:",
 	    "orderFrontFontPanel:",
+	    "performZoomAction:",
 	    "showPrefPanel:"
 	);
 	Super = NSObject;

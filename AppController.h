@@ -35,6 +35,7 @@
 
 - (void) showPrefPanel: (id)sender;
 - (void) newDocument: (id)sender;
+- (void) showDebugWindow: (id)sender;
 
 @end
 

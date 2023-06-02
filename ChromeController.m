@@ -113,20 +113,29 @@ static ChromeController* chromeController = nil;
   task = nil;
 }
 
-- (void) closeProcess {
+- (void) sendCommand:(NSString*) cmd {
   if (!pidfile || !running) return;
 
   NSInteger p = [self processPort];
   if (p > 0) {
-    NSLog(@"terminate %d", p);
     NSFileHandle* remote = [NSFileHandle fileHandleAsClientAtAddress:@"localhost" service:[NSString stringWithFormat:@"%ld", p] protocol:@"tcp"];
     if (remote) {
-      NSString* ss = @"TERMINATE:\n";
+      NSString* ss = [NSString stringWithFormat:@"%@\n", cmd];
       NSData* data = [ss dataUsingEncoding:NSUTF8StringEncoding];
       [remote writeData:data];
       [remote closeFile];
     }
   }
+
+}
+
+- (void) showDebugWindow {
+  [self sendCommand:@"SHOW_DEBUG:"];
+}
+
+- (void) closeProcess {
+  NSLog(@"terminate!");
+  [self sendCommand:@"TERMINATE:"];
 }
 
 @end

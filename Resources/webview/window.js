@@ -40,7 +40,7 @@ window.addEventListener('load', function(evt) {
   wv.addEventListener('permissionrequest', function(evt) {
     if (evt.permission === 'download') {
       sendCommand('ON_DOWNLOAD:'+evt.request.url);
-      evt.request.allow();
+      evt.request.deny();
     }
     else {
       evt.request.allow();

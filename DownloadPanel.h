@@ -31,20 +31,23 @@
 {
   IBOutlet NSTextField* addressField;
   IBOutlet NSTextField* statusField;
-  IBOutlet NSButton* actionButton;
+  IBOutlet NSButton* openButton;
+  IBOutlet NSButton* saveButton;
 
   IBOutlet NSWindow* window;
 
   NSURL* downloadURL;
-  NSDate* downloadDate;
-  NSMutableDictionary* downloads;
+  NSURLConnection* downloadConnection;
+  NSString* tempFile;
+  NSFileHandle* tempFileHandle;
   NSInteger status;
 }
 
-- (id) initWithURL:(NSURL*)url forWebView:(id)view;
+- (id) initWithURL:(NSURL*)url;
 - (NSWindow*) window;
 
-- (IBAction) takeAction:(id) sender;
+- (IBAction) saveFile:(id) sender;
+- (IBAction) openFile:(id) sender;
 @end
 
 #endif // _DOWNLOADPANEL_H_

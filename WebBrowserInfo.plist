@@ -27,7 +27,7 @@
 		default = O;
 	    };
 	    NSMenuItem = {
-		default = "OpenURL";
+		default = OpenURL;
 	    };
 	    NSMessage = openURL;
 	    NSPortName = WebBrowser;

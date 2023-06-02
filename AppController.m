@@ -134,6 +134,11 @@
   [preferences show:sender];
 }
 
+- (void) showDebugWindow: (id)sender {
+  ChromeController* ctrl = [ChromeController sharedInstance];
+  [ctrl showDebugWindow];
+}
+
 - (void) newDocument: (id)sender {
   NSURL *url = [NSURL URLWithString:[MYConfig valueForKey:@"HOME_ADDRESS"]];
   NSInteger show = [[MYConfig valueForKey:@"SHOW_ON_LAUNCH"]integerValue];
