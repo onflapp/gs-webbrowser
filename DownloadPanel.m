@@ -45,11 +45,6 @@
   downloadConnection = [NSURLConnection connectionWithRequest:req delegate:self];
   [downloadConnection retain];
 
-  tempFile = [NSString stringWithFormat:@"/tmp/%ld.tmp", [self hash]];
-  [tempFile retain];
-
-  tempFileHandle = [NSFileHandle fileHandleForWritingAtPath:tempFile];
-  [tempFileHandle retain];
 
   return self;
 }
@@ -66,7 +61,20 @@
   return window;
 }
 
+- (NSString*) __suggestName:(NSURLResponse*) resp {
+  NSString* fname = [resp suggestedFilename];
+
+  if ([[fname pathExtension] length]) return fname;
+  
+  NSString* ext = [[resp URL] pathExtension];
+  if ([ext length]) return [NSString stringWithFormat:@"%@.%@", fname, ext];
+
+  return nil;
+}
+
 - (IBAction) openFile:(id) sender {
+  NSWorkspace* ws = [NSWorkspace sharedWorkspace];
+  [ws openFile:tempFile];
   [window close];
 }
 
@@ -87,7 +95,14 @@
 }
 
 - (void) connection:(NSURLConnection*) con didReceiveResponse:(NSURLResponse*) resp {
-  NSLog(@">>> %@", resp);
+  NSString* name = [self __suggestName:resp];
+  if (!name) name = @"download.tmp";
+
+  tempFile = [NSString stringWithFormat:@"/tmp/%ld-%@", [self hash], name];
+  [tempFile retain];
+
+  tempFileHandle = [NSFileHandle fileHandleForWritingAtPath:tempFile];
+  [tempFileHandle retain];
 }
 
 - (void) connection:(NSURLConnection*) con didReceiveData:(NSData*) data {
