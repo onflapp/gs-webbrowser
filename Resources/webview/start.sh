@@ -7,6 +7,7 @@ function cleanup {
 
 trap cleanup SIGINT SIGTERM
 
+APPNAME="$1"
 CHROME=`type -p google-chrome`
 [ -z "$CHROME" ] && CHROME=`type -p chromium`
 [ -z "$CHROME" ] && CHROME=`type -p chromium-browser`
@@ -17,10 +18,10 @@ if [ -z "$CHROME" ];then
   exit 10
 fi
 
-DDIR="$HOME/Library/WebBrowser/Profile"
-WDIR="$HOME/Library/WebBrowser/webview.tmp"
-PIDF="$HOME/Library/WebBrowser/controller.pid"
-LOCK="/tmp/$UID-WebBrowser-controller.lock"
+DDIR="$HOME/Library/$APPNAME/Profile"
+WDIR="$HOME/Library/$APPNAME/webview.tmp"
+PIDF="$HOME/Library/$APPNAME/controller.pid"
+LOCK="/tmp/$UID-$APPNAME-controller.lock"
 
 if [ -f "$LOCK" ];then
   echo "lock $LOCK exists, exit"

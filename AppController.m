@@ -18,6 +18,8 @@
 + (void) initialize {
   NSMutableDictionary* defaults = [NSMutableDictionary dictionary];
   NSMutableDictionary* webview = [NSMutableDictionary dictionary];
+
+  NSString* homeURL = [[[NSBundle mainBundle] infoDictionary] objectForKey: @"AppHomeURL"];
   
   [webview setValue:@"" forKey:@"USER_AGENT"];
   
@@ -25,6 +27,10 @@
   [defaults setValue:@"https://www.google.com/search?q=" forKey:@"SEARCH_ADDRESS"];
   [defaults setValue:@"https://github.com/onflapp/gs-desktop" forKey:@"HOME_ADDRESS"];
   [defaults setValue:[NSNumber numberWithInteger:1] forKey:@"SHOW_ON_LAUNCH"];
+
+  if (homeURL) {
+    [defaults setValue:homeURL forKey:@"AppHomeURL"];
+  }
   
   [[NSUserDefaults standardUserDefaults] registerDefaults: defaults];
   [[NSUserDefaults standardUserDefaults] synchronize];
@@ -44,10 +50,20 @@
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)aNotif {
+  NSUserDefaults* cfg = [NSUserDefaults standardUserDefaults];
+  NSString* homeURL = [cfg valueForKey:@"AppHomeURL"];
+
   [NSApp setServicesProvider:self];
 
   if([NSApp isScriptingSupported]) {
     [NSApp initializeApplicationScripting];
+  }
+  
+  if ([homeURL length]) {
+    NSURL* url = [NSURL URLWithString:homeURL];
+    Document* doc = [[Document alloc] init];
+    [doc showWindow];
+    [doc setURL:url];
   }
 }
 

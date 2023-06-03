@@ -11,6 +11,7 @@
 @interface ChromeController : NSObject {
   NSTask* task;
   NSString* pidfile;
+  NSString* appname;
   BOOL running;
 }
 

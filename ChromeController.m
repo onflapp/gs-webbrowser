@@ -8,11 +8,13 @@ static ChromeController* chromeController = nil;
 - (id) init {
   self = [super init];
   NSString* config = [NSStandardLibraryPaths() firstObject];
+  appname = [[[[NSBundle mainBundle] bundlePath] lastPathComponent] stringByDeletingPathExtension];
+  [appname retain];
   
   running = YES;
-  pidfile = [config stringByAppendingPathComponent:@"WebBrowser/controller.pid"];
+  pidfile = [config stringByAppendingPathComponent:appname];
+  pidfile = [pidfile stringByAppendingPathComponent:@"controller.pid"];
   [pidfile retain];
-  
   
   return self;
 }
@@ -27,6 +29,9 @@ static ChromeController* chromeController = nil;
 
   [task release];
   task = nil;
+
+  [appname release];
+  appname = nil;
 
   [pidfile release];
   pidfile = nil;
@@ -88,7 +93,7 @@ static ChromeController* chromeController = nil;
 
   task = [[NSTask alloc] init];
   [task setLaunchPath:@"/bin/bash"];
-  [task setArguments:[NSArray arrayWithObjects:path, nil]];
+  [task setArguments:[NSArray arrayWithObjects:path, appname, nil]];
   [task setCurrentDirectoryPath:wp];
 
   [[NSNotificationCenter defaultCenter]
