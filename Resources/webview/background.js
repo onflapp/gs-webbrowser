@@ -12,9 +12,7 @@ chrome.app.runtime.onLaunched.addListener(function(evt) {
     }
   }, function(win) {
     window.mydebugwin = win;
-    setTimeout(function() {
-      startServer(PORT);
-    }, 500);
+    startServer(PORT);
   });
 });
 

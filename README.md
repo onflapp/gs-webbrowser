@@ -16,6 +16,8 @@ Yet, you'll get full GNUstep experience.
 
 ### Prerequisites
 
+WebBrowser.app relies on GS Desktop to work properly, using it as stand-alone application is probably not going to work.
+
 As the app is just a wrapper, it obviously needs Chrome properly installed.
 This can be done differently depending on what version or flavour of your Linux distro you are running.
 
@@ -73,9 +75,6 @@ event   <-- socket --- background.js <-- post message --- window.js <-- API --- 
 ### Future Direction
 
 Although the browser is fully functional as of today, it still has many rough edges.
-
-One very annoying thing is that it fails to capture the Chrome window on start up sometimes.
-This is not a big problem as you can simply close the window and create new one, but it is annoying.
 
 Improve how downloads are handled. As this functionality is not exposed by the Chrome extension API 
 in any meaning way, I had to "hack" around it. I'll have to find a better way.

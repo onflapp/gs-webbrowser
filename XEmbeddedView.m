@@ -63,33 +63,24 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   Atom atom_NAME = XInternAtom(dpy, "WM_NAME", True);
   
   int result = XQueryTree(dpy, rootWindow, &root, &parent, &children, &nchildren);
-  unsigned int windowCount = 0;
+  int windowCount = 0;
   Window found = 0;
   
-  for (windowCount = 0; result && windowCount < nchildren; windowCount++) {
+  for (windowCount = nchildren-1; result && windowCount >= 0; windowCount--) {
     Window win = children[windowCount];
     prop_class = NULL;
     prop_name = NULL;
-    
+
     rv = XGetWindowAttributes(dpy, win, &wattrs);
+    if (!rv) {
+      continue;
+    }
+    /*
     if (rv && wattrs.map_state == IsViewable) {
     }
     else {
       continue;
     }
-
-    /*  
-    NSInteger pid = 0;
-    rv = XGetWindowProperty(dpy, win, atom_PID, 0, 1024,
-                       False, AnyPropertyType,
-                       &actual_type,
-                       &actual_format, &nitems,
-                       &bytes_after,
-                       &prop);
-    if (rv != Success) continue;
-    if (!prop) continue;
-    
-    pid = prop[0] + (prop[1]<<8) + (prop[2]<<16) + (prop[3]<<24);
     */
 
     rv = XGetClassHint(dpy, win, &whints);
@@ -108,7 +99,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        &prop_class);
                        
     if (rv == Success && prop_class) {
-      //NSLog(@"CLASS >>>> %x %s", win, prop);
+      //NSLog(@"CLASS >>>> %x %s", win, prop_class);
       if (strcmp(prop_class, wmclass) == 0) {
         found = win;
         save_found_wmclass(NULL, prop_class);
@@ -124,7 +115,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        &prop_name);
                        
     if (rv == Success && prop_name) {
-      //NSLog(@"NAME >>>> %x %s", win, prop);
+      //NSLog(@"NAME >>>> %x %d %s", win, wattrs.map_state, prop_name);
       if (strcmp(prop_name, wmclass) == 0) {
         found = win;
         save_found_wmclass(prop_name, prop_class);

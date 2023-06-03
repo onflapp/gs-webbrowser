@@ -5,12 +5,6 @@ function cleanup {
   exit 0
 }
 
-XWMC=`defaults read WebBrowser xembedded_last_wmclass 2>/dev/null`
-read -r a b c <<<"$XWMC"
-if [ -n "$c" ];then
-  wdwrite WMWindowAttributes "$c.*" '{ NoAppIcon = Yes; Unfocusable = Yes; }'
-fi
-
 trap cleanup SIGINT SIGTERM
 
 CHROME=`type -p google-chrome`
@@ -33,8 +27,9 @@ if [ -f "$LOCK" ];then
   exit 1
 fi
 
-mkdir -p "$DDIR"
-mkdir -p "$WDIR"
+mkdir -p "$HOME/Downloads" 2>/dev/null
+mkdir -p "$DDIR" 2>/dev/null
+mkdir -p "$WDIR" 2>/dev/null
 
 cp ./* "$WDIR/"
 

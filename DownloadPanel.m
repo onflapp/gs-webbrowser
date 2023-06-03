@@ -69,12 +69,29 @@
   NSString* ext = [[resp URL] pathExtension];
   if ([ext length]) return [NSString stringWithFormat:@"%@.%@", fname, ext];
 
+  NSString* mime = [resp MIMEType];
+  if ([mime length]) {
+    NSRange r = [mime rangeOfString:@"/"];
+    if (r.location != NSNotFound) {
+      ext = [mime substringFromIndex:r.location+1];
+      return [NSString stringWithFormat:@"%@.%@", fname, ext];
+    }
+  }
+
   return nil;
 }
 
 - (IBAction) openFile:(id) sender {
   NSWorkspace* ws = [NSWorkspace sharedWorkspace];
-  [ws openFile:tempFile];
+  
+  if ([tempFile hasSuffix:@".tmp"]) {
+    NSString* dir = [tempFile stringByDeletingLastPathComponent];
+    [ws selectFile:tempFile inFileViewerRootedAtPath:dir];
+  }
+  else {
+    [ws openFile:tempFile];
+  }
+
   [window close];
 }
 
@@ -85,6 +102,7 @@
   NSWorkspace* ws = [NSWorkspace sharedWorkspace];
 
   [save setDirectory:dir];
+
   if ([save runModal]) {
     NSString* fl = [save filename];
     [fm moveItemAtPath:tempFile toPath:fl error:nil];
@@ -98,11 +116,14 @@
   NSString* name = [self __suggestName:resp];
   if (!name) name = @"download.tmp";
 
-  tempFile = [NSString stringWithFormat:@"/tmp/%ld-%@", [self hash], name];
+  tempFile = [NSString stringWithFormat:@"/tmp/%lx-%@", [self hash], name];
   [tempFile retain];
 
+  [[NSFileManager defaultManager] createFileAtPath:tempFile contents:nil attributes:nil];
   tempFileHandle = [NSFileHandle fileHandleForWritingAtPath:tempFile];
   [tempFileHandle retain];
+
+  [window setTitle:[NSString stringWithFormat:@"downloading: %@...", [tempFile lastPathComponent]]];
 }
 
 - (void) connection:(NSURLConnection*) con didReceiveData:(NSData*) data {
@@ -112,7 +133,7 @@
 - (void) connectionDidFinishLoading:(NSURLConnection*) con {
   [tempFileHandle closeFile];
 
-  [window setTitle:@"downloaded"];
+  [window setTitle:[NSString stringWithFormat:@"downloaded: %@", [tempFile lastPathComponent]]];
   [statusField setStringValue:@""];
 
   [openButton setEnabled:YES];

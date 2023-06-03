@@ -38,24 +38,28 @@
   [super destroyXWindow];
 }
 
+- (void) __remapWebView:(NSString*) val {
+  NSLog(@"ready: %@", val);
+  Window w = [self findXWindowID:val];
+  if (w) {
+    [self remapXWindow:w];
+    ready = YES;
+
+    if (initialURL) {
+      [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", initialURL]];
+      [initialURL release];
+      initialURL = nil;
+    }
+  }
+}
+
 - (void) receiveCommand:(NSString*) cmd {
   NSRange r = [cmd rangeOfString:@":"];
   NSString* nm = [cmd substringToIndex:r.location];
   NSString* val = [cmd substringFromIndex:r.location+1];
   
   if ([nm isEqual:@"ON_READY"]) {
-    NSLog(@"ready: %@", val);
-    Window w = [self findXWindowID:val];
-    if (w) {
-      [self remapXWindow:w];
-      ready = YES;
-
-      if (initialURL) {
-        [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", initialURL]];
-        [initialURL release];
-        initialURL = nil;
-      }
-    }
+    [self performSelector:@selector(__remapWebView:) withObject:val afterDelay:0.1];
   }
   if ([nm isEqual:@"ON_FOCUS"]) {
   }
