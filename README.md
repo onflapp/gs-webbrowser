@@ -21,6 +21,15 @@ WebBrowser.app relies on GS Desktop to work properly, using it as stand-alone ap
 As the app is just a wrapper, it obviously needs Chrome properly installed.
 This can be done differently depending on what version or flavour of your Linux distro you are running.
 
+As long as the app can find one of the following binaries, you should be fine.
+
+```
+google-chrome
+chromium
+chromium-browser
+chrome
+```
+
 #### Manual Install Chrome (x64)
 
 do the following:
@@ -38,20 +47,11 @@ do the following:
 apt install chrome-browser
 ```
 
-As long as the app can find one of the following binaries, you should be fine.
-
-```
-google-chrome
-chromium
-chromium-browser
-chrome
-```
+### How does it work
 
 WebBrowser.app relies on [Chrome extension API](https://developer.chrome.com/docs/extensions/reference/) 
 and on Chrome's ability to load extensions as web-apps (`--load-and-launch-app`).
 This functionality might get removed from Chrome as it has been marked as deprecated, but so far so good.
-
-### How does it work
 
 #### event flow
 
