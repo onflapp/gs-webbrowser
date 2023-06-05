@@ -21,12 +21,22 @@ WebBrowser.app relies on GS Desktop to work properly, using it as stand-alone ap
 As the app is just a wrapper, it obviously needs Chrome properly installed.
 This can be done differently depending on what version or flavour of your Linux distro you are running.
 
-To install Chrome manually (x64), you could do the following:
+#### Manual Install Chrome (x64)
+
+do the following:
 
 ```
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome-stable_current_amd64.deb
 ````
+
+#### Manual Install Chrome (Ubuntu)
+
+do the following:
+
+```
+apt install chrome-browser
+```
 
 As long as the app can find one of the following binaries, you should be fine.
 
