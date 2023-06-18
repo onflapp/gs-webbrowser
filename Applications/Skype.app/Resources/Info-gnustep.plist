@@ -1,0 +1,26 @@
+{
+    ApplicationDescription = "No description avaliable!";
+    ApplicationIcon = "Skype.tiff";
+    ApplicationName = Skype;
+    ApplicationRelease = "0.1";
+    AppHomeURL = "https://web.skype.com/";
+    CFBundleURLTypes = (
+	{
+	    CFBundleURLName = "Web site URL";
+	    CFBundleURLSchemes = (
+		http,
+		https
+	    );
+	}
+    );
+    Copyright = "Copyright (C) 200x";
+    CopyrightDescription = "Released under ...";
+    FullVersionID = "0.1";
+    GSMainMarkupFile = "";
+    NSExecutable = Skype;
+    NSIcon = "Skype.tiff";
+    NSMainNibFile = "WebBrowser.gorm";
+    NSMainStoryboardFile = "";
+    NSPrincipalClass = BrowserApp;
+    NSRole = Application;
+}

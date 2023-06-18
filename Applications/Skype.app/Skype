@@ -1,0 +1,5 @@
+#!/bin/bash
+F=`realpath "$0"`
+D=`dirname "$F"`
+export MAIN_WEBBROWSER_BUNDLE="$D"
+exec -a Skype /Applications/WebBrowser.app/WebBrowser $@

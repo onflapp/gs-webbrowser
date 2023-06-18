@@ -156,10 +156,17 @@
 }
 
 - (void) newDocument: (id)sender {
+  NSURL *homeURL = [NSURL URLWithString:[MYConfig valueForKey:@"AppHomeURL"]];
   NSURL *url = [NSURL URLWithString:[MYConfig valueForKey:@"HOME_ADDRESS"]];
   NSInteger show = [[MYConfig valueForKey:@"SHOW_ON_LAUNCH"]integerValue];
 
   Document *doc = [[Document alloc] init];
+
+  if (homeURL) {
+    show = YES;
+    url = homeURL;
+  }
+
   if (show && url) {
     [doc setURL:url];
   }
