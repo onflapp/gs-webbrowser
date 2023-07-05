@@ -53,9 +53,17 @@ function DataConnection(sockId) {
         window.mydebugwin.show();
       }
     }
+    else if (cmd == 'CLOSE:') {
+      console.log('close');
+      try { that.win.close(); }
+      catch(ex) { }
+    }
     else {
-      var cw = that.win.contentWindow;
-      cw.postMessage(cmd);
+      try {
+        var cw = that.win.contentWindow;
+        cw.postMessage(cmd);
+      }
+      catch(ex) {}
     }
   };
 
@@ -87,7 +95,8 @@ function startServer(port) {
     var sock = info.socketId;
     var con = connections['x'+sock];
     if (con) {
-      con.win.close();
+      try { con.win.close(); }
+      catch(ex) { }
       delete connections['x'+sock];
     }
       

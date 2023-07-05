@@ -81,7 +81,7 @@ static NSWindow* _lastMainWindow;
 
 - (void) goHome:(id) sender {
   NSURL* url = [NSURL URLWithString:[MYConfig valueForKey:@"HOME_ADDRESS"]];
-  
+
   [self setURL:url];
 }
 
@@ -161,6 +161,8 @@ static NSWindow* _lastMainWindow;
 }
 
 - (void) windowWillClose:(NSNotification *)notification {
+  [webView close];
+
   if (_lastMainWindow == window) _lastMainWindow = nil;
 
   [window setDelegate: nil];

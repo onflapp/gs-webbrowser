@@ -32,6 +32,7 @@
 - (void) goBack:(id) sender;
 - (void) goForward:(id) sender;
 - (void) performZoomAction:(id) sender;
+- (void) close;
 
 @end
 

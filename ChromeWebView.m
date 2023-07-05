@@ -32,6 +32,7 @@
 }
 
 - (void) destroyXWindow {
+  [self close];
   ready = NO;
 
   [self disconnectController];
@@ -246,6 +247,13 @@
     NSString* text = [panel findString];
     [self sendCommand:[NSString stringWithFormat:@"FINDPREV:%@", text]];
   }
+}
+
+- (void) close {
+  [self sendCommand:@"CLOSE:"];
+
+  NSDate* limit = [NSDate dateWithTimeIntervalSinceNow:0.1];
+  [[NSRunLoop currentRunLoop] runUntilDate: limit];
 }
 
 @end
