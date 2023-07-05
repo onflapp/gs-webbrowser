@@ -42,6 +42,8 @@ Resources/Home.tiff \
 Resources/Left.tiff \
 Resources/Right.tiff \
 Resources/WebBrowser.tiff \
+Resources/url.tiff \
+Resources/html.tiff \
 Resources/webview \
 Resources/ApplicationScripting.xlp \
 Resources/ScriptingInfo.plist 

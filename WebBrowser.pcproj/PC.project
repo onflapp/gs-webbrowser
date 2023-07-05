@@ -62,7 +62,9 @@
 	"Home.tiff",
 	"Left.tiff",
 	"Right.tiff",
-	"WebBrowser.tiff"
+	"WebBrowser.tiff",
+	"url.tiff",
+	"html.tiff"
     );
     INSTALLDIR = "$(HOME)/GNUstep";
     INTERFACES = (
