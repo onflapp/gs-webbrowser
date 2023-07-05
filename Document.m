@@ -59,19 +59,24 @@ static NSWindow* _lastMainWindow;
 }
 
 - (void) showWindow {
-  [window setFrameUsingName:@"browser_window"];
-  [window setFrameAutosaveName:@"browser_window"];
-
-  if (!_lastMainWindow) _lastMainWindow = [[NSApp orderedWindows] lastObject];
-  if (_lastMainWindow) {
-    NSRect  r = [_lastMainWindow frame];
-    NSPoint p = r.origin;
-
-    p.x += 24;
-    [window setFrameOrigin:p];
+  if ([window isVisible]) {
+    [window makeKeyAndOrderFront:self];
   }
+  else {
+    [window setFrameUsingName:@"browser_window"];
+    [window setFrameAutosaveName:@"browser_window"];
 
-  [window makeKeyAndOrderFront:self];
+    if (!_lastMainWindow) _lastMainWindow = [[NSApp orderedWindows] lastObject];
+    if (_lastMainWindow) {
+      NSRect  r = [_lastMainWindow frame];
+      NSPoint p = r.origin;
+
+      p.x += 24;
+      [window setFrameOrigin:p];
+    }
+
+    [window makeKeyAndOrderFront:self];
+  }
 }
 
 - (void) goHome:(id) sender {
@@ -86,6 +91,17 @@ static NSWindow* _lastMainWindow;
 
 - (void) goForward:(id) sender {
   [webView goForward:sender];
+}
+
+- (void) saveBookmark:(id) sender {
+  NSSavePanel* panel = [NSSavePanel savePanel];
+  if ([panel runModal] == NSOKButton) {
+    NSString* ext = [[panel filename] pathExtension];
+    NSData* data = [self provideBookmarkDataForExtension:ext];
+    if (data) {
+      [data writeToFile:[panel filename] atomically:NO];
+    }
+  }
 }
 
 - (void) performZoomAction:(id) sender {
@@ -125,6 +141,15 @@ static NSWindow* _lastMainWindow;
   }
   
   [self setURL:url];
+}
+
+- (NSData*) provideBookmarkDataForExtension:(NSString*) ext {
+  if (!currentURL) return nil;
+
+  NSMutableString* str = AUTORELEASE([NSMutableString new]);
+  [str appendFormat:@"%@\n", currentURL];
+
+  return [str dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSString*) provideLinkForDragging {

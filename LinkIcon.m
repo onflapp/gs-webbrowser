@@ -43,7 +43,7 @@
   }
 
   NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-  NSPoint      dragPosition;
+  NSPoint dragPosition;
 
   [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:nil];
   [pboard setString:linkToDrag forType:NSStringPboardType];

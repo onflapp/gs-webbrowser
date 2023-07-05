@@ -135,7 +135,7 @@
   }
   
   if (url) {
-    Document* doc = [[Document alloc] init];
+    Document* doc = [self documentForURL:url];
     [doc showWindow];
     [doc setURL:url];
   }
@@ -172,6 +172,23 @@
   }
 
   [doc showWindow];
+}
+
+- (Document*) documentForURL:(NSURL*) url {
+  Document* doc = nil;
+  NSString* requestedURL = [url description];
+
+  for (NSWindow* win in [NSApp windows]) {
+    if ([[win delegate] isKindOfClass:[Document class]]) {
+      doc = (Document*) [win delegate];
+      if ([[doc currentURL] isEqualToString: requestedURL]) {
+        return doc;
+      }
+    }
+  }
+
+  doc = [[Document alloc] init];
+  return doc;
 }
 
 @end

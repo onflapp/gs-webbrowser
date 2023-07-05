@@ -12,9 +12,10 @@
     };
     FirstResponder = {
 	Actions = (
-	    "showDebugWindow:",
+	    "saveBookmark:",
 	    "orderFrontFontPanel:",
 	    "performZoomAction:",
+	    "showDebugWindow:",
 	    "showPrefPanel:"
 	);
 	Super = NSObject;

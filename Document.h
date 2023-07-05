@@ -45,6 +45,10 @@
 - (void) loadLocation:(id) sender;
 - (void) goBack:(id) sender;
 - (void) goForward:(id) sender;
+- (void) saveBookmark:(id) sender;
+
+- (NSData*) provideBookmarkDataForExtension:(NSString*) ext;
+- (NSString*) provideLinkForDragging;
 
 - (NSString*) currentURL;
 - (void) setURL:(NSURL*) url;
