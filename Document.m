@@ -95,11 +95,20 @@ static NSWindow* _lastMainWindow;
 
 - (void) saveBookmark:(id) sender {
   NSSavePanel* panel = [NSSavePanel savePanel];
+  //[panel setNameFieldStringValue:@"bookmark.url"];
+
   if ([panel runModal] == NSOKButton) {
-    NSString* ext = [[panel filename] pathExtension];
+    NSString* path = [panel filename];
+    NSString* ext  = [path pathExtension];
+
+    if ([ext length] == 0) {
+      ext = @"url";
+      path = [path stringByAppendingString:@".url"];
+    }
+
     NSData* data = [self provideBookmarkDataForExtension:ext];
     if (data) {
-      [data writeToFile:[panel filename] atomically:NO];
+      [data writeToFile:path atomically:NO];
     }
   }
 }
