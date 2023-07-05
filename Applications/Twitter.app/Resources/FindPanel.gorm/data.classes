@@ -1,0 +1,21 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    FindPanel = {
+	Actions = (
+	    "orderFrontFindPanel:",
+	    "performFindPanelAction:"
+	);
+	Outlets = (
+	    panel,
+	    findText
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "findPrevious:",
+	    "orderFrontFindPanel:"
+	);
+	Super = NSObject;
+    };
+}

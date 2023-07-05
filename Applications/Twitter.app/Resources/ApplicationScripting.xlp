@@ -1,0 +1,9 @@
+- currentDocument -> Document
+- documents -> array
+
+- newDocument
+
+Document
+- currentURL
+- loadPage:
+- executeJavaScript:

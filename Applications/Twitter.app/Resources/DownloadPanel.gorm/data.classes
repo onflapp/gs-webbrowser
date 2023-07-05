@@ -1,0 +1,37 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    DownloadPanel = {
+	Actions = (
+	    "saveFile:",
+	    "openFile:"
+	);
+	Outlets = (
+	    addressField,
+	    statusField,
+	    window,
+	    openButton,
+	    saveButton
+	);
+	Super = NSObject;
+    };
+    FindPanel = {
+	Actions = (
+	    "orderFrontFindPanel:",
+	    "performFindPanelAction:"
+	);
+	Outlets = (
+	    panel,
+	    findText
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "findPrevious:",
+	    "saveFile:",
+	    "openFile:",
+	    "orderFrontFindPanel:"
+	);
+	Super = NSObject;
+    };
+}

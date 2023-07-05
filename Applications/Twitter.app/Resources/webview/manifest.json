@@ -1,0 +1,35 @@
+{
+  "name": "webview",
+  "description": "webview",
+  "version": "0.1",
+  "manifest_version": 2,
+  "permissions": [
+    "download",
+    "webview",
+    "clipboardRead",
+    "clipboardWrite",
+    "audioCapture",
+    "videoCapture",
+    {"fileSystem": ["read", "write"]}
+  ],
+  "offline_enabled": true,
+  "file_handlers": {
+    "any": {
+      "extensions": ["pid"]
+    }
+  },
+  "sockets": {
+    "tcp": {
+      "connect": ""
+    },
+    "tcpServer": {
+      "listen": ":"
+    }
+  },
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": { "16": "icon.jpg", "128": "icon.jpg"}
+}

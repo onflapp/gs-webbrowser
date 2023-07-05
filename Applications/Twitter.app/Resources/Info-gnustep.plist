@@ -1,0 +1,25 @@
+{
+    ApplicationDescription = "No description avaliable!";
+    ApplicationIcon = "Twitter.tiff";
+    ApplicationName = Twitter;
+    ApplicationRelease = "0.1";
+    AppHomeURL = "https://twitter.com/home";
+    CFBundleURLTypes = (
+	{
+	    CFBundleURLName = "Web site URL";
+	    CFBundleURLSchemes = (
+		twitter,
+	    );
+	}
+    );
+    Copyright = "Copyright (C) 200x";
+    CopyrightDescription = "Released under ...";
+    FullVersionID = "0.1";
+    GSMainMarkupFile = "";
+    NSExecutable = Twitter;
+    NSIcon = "Twitter.tiff";
+    NSMainNibFile = "WebBrowser.gorm";
+    NSMainStoryboardFile = "";
+    NSPrincipalClass = BrowserApp;
+    NSRole = Application;
+}
