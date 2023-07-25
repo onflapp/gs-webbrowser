@@ -259,6 +259,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   
   NSRect r = [self convertToNativeWindowRect];
   float gsscale = [[NSUserDefaults standardUserDefaults] floatForKey: @"GSScaleFactor"];
+  if (gsscale < 0.2) gsscale = 1.0;
 
   XMoveResizeWindow(xdisplay, xwindowid, r.origin.x * gsscale, r.origin.y * gsscale, r.size.width  * gsscale, r.size.height  * gsscale);
   XFlush(xdisplay);
