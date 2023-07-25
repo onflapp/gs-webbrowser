@@ -27,6 +27,36 @@
 
 static NSWindow* _lastMainWindow;
 
+// Function to check URL validity and presence of "https://"
+NSInteger checkURLValidity(NSString *urlString) {
+    NSString *httpsPattern = @"^https://";
+    //NSString *urlPattern = @"^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
+	NSString *urlPattern = @"^(http://|https://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
+	
+    NSRegularExpression *httpsRegex = [NSRegularExpression regularExpressionWithPattern:httpsPattern
+                                                                                 options:NSRegularExpressionCaseInsensitive
+                                                                                   error:nil];
+    NSRegularExpression *urlRegex = [NSRegularExpression regularExpressionWithPattern:urlPattern
+                                                                               options:NSRegularExpressionCaseInsensitive
+                                                                                 error:nil];
+
+    NSUInteger httpsMatches = [httpsRegex numberOfMatchesInString:urlString
+                                                          options:0
+                                                            range:NSMakeRange(0, [urlString length])];
+    NSUInteger urlMatches = [urlRegex numberOfMatchesInString:urlString
+                                                      options:0
+                                                        range:NSMakeRange(0, [urlString length])];
+
+    if (httpsMatches > 0) {
+        return 2; // URL is fully formed with "https://"
+    } else if (urlMatches > 0) {
+        return 1; // URL is valid but missing "https://"
+    } else {
+        return 0; // Not a valid URL
+    }
+}
+
+
 @implementation Document
 
 + (Document*) lastActiveDocument {
@@ -139,15 +169,26 @@ static NSWindow* _lastMainWindow;
   
   if ([sender isKindOfClass:[NSTextField class]]) val = [sender stringValue];
   else val = [addressField stringValue];
-  
-  if ([val hasPrefix:@"http://"] || [val hasPrefix:@"https://"] || [val hasPrefix:@"file://"]) {
-    url = [NSURL URLWithString:val];
-  }
-  else {
+
+  NSInteger valid = checkURLValidity(val);
+  if (valid == 2) {
+     url = [NSURL URLWithString:val];
+  } else if (valid  == 1) {
+     url = [NSURL URLWithString:[@"https://" stringByAppendingString: val]];
+  } else {
     val = [val stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString* search = [NSString stringWithFormat:@"%@%@", [MYConfig valueForKey:@"SEARCH_ADDRESS"], val];
     url = [NSURL URLWithString:search];
   }
+  
+  //if ([val hasPrefix:@"http://"] || [val hasPrefix:@"https://"] || [val hasPrefix:@"file://"]) {
+  //  url = [NSURL URLWithString:val];
+  //}
+  //else {
+  //  val = [val stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  //  NSString* search = [NSString stringWithFormat:@"%@%@", [MYConfig valueForKey:@"SEARCH_ADDRESS"], val];
+  //  url = [NSURL URLWithString:search];
+  //}
   
   [self setURL:url];
 }
