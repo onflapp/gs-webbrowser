@@ -2,6 +2,12 @@ window.config = {
   zoom: 1.0
 };
 
+window.setWebViewZoom = function(v) {
+  console.log("zoom:" + v);
+  window.myzoomsetting = v;
+  window.mywebview.setZoom(v);
+}
+
 window.addEventListener('message', function(evt) {
   if (evt.origin.indexOf('chrome-extension://') == 0) {
     receiveCommand(evt.data);
@@ -20,18 +26,42 @@ window.addEventListener('load', function(evt) {
   window.mywebview = wv;
   window.mylasttitle = 0;
   window.mywebviewid = 'ASGGFD-webview-'+window.location.hash.substr(1);
-
-  window.mywebview.setZoom(window.config.zoom);
-  //window.mywebview.setZoomMode('per-view');
+  window.myloading = 0;
 
   document.title = window.mywebviewid;
 
-  wv.addEventListener('loadstart', function(evt) {
-    //window.mywebview.setZoomMode('per-view');
-    window.mywebview.setZoom(window.config.zoom);
+  wv.addEventListener('zoomchange', function(evt) {
+    console.log(evt);
+    var a = evt.newZoomFactor;
+    if (a != window.config.zoom) {
 
+      if (window['myzoomsetting'] == a) {
+        clearTimeout(window['myenforecezoom']);
+        window.myzoomsetting = -1;
+      }
+      else if (window.myloading) {
+        clearTimeout(window['myenforecezoom']);
+        window.setWebViewZoom(window.config.zoom);
+      }
+      else {
+        clearTimeout(window['myenforecezoom']);
+        window.myenforecezoom = setTimeout(function() {
+          console.log("ENFORCE ZOOM");
+          window.setWebViewZoom(window.config.zoom);
+        }, 500);
+      }
+    }
+    else {
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
+  });
+
+  wv.addEventListener('loadstart', function(evt) {
+    window.myloading = 1;
     sendCommand('ON_LOADING_START:'+evt.url);
   });
+
   wv.addEventListener('loadstop', function(evt) {
     var u = window.mywebview.getAttribute('src');
     u = u?u:'';
@@ -39,18 +69,19 @@ window.addEventListener('load', function(evt) {
       u = 'file://'+u.substr(window.myfileserver.length);
     }
 
-    //window.mywebview.setZoomMode('per-view');
-    window.mywebview.setZoom(window.config.zoom);
-
+    window.myloading = 0;
     sendCommand('ON_LOADING_STOP:'+u);
   });
+
   wv.addEventListener('message', function(evt) {
     console.log(evt);
   });
+
   wv.addEventListener('newwindow', function(evt) {
     sendCommand('ON_NEW_WINDOW:'+evt.targetUrl);
     evt.preventDefault();
   });
+
   wv.addEventListener('permissionrequest', function(evt) {
     if (evt.permission === 'download') {
       sendCommand('ON_DOWNLOAD:'+evt.request.url);
@@ -62,6 +93,7 @@ window.addEventListener('load', function(evt) {
     evt.preventDefault();
     console.log(evt);
   });
+
   wv.addEventListener('contentload', function(evt) {
     if (window.mylasttitle === 0) {
       checkTitle();
@@ -151,7 +183,7 @@ CMD = {
     var cfg = JSON.parse(val);
     if (cfg) {
       window.config = cfg;
-      window.mywebview.setZoom(config.zoom);
+      window.setWebViewZoom(config.zoom);
     }
   },
   'BACK': function(val) {
@@ -194,5 +226,9 @@ CMD = {
       sendCommand('ON_RETURN:'+escape(rv));
     };
     window.mywebview.executeScript({ code:code }, cb);
+  },
+  'SHOW_DEBUG': function(val) {
+    var el = window.document.getElementById("dbgwin");
+    el.style.display = 'block';
   }
 };

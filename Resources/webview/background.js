@@ -51,6 +51,13 @@ function DataConnection(sockId) {
     else if (cmd == 'SHOW_DEBUG:') {
       if (window['mydebugwin']) {
         window.mydebugwin.show();
+        var wins = chrome.app.window.getAll();
+        for (var i = 0; i < wins.length; i++) {
+          var win = wins[i];
+          if (win != window.mydebugwin) {
+            win.contentWindow.postMessage(cmd);
+          }
+        }
       }
     }
     else if (cmd == 'CLOSE:') {

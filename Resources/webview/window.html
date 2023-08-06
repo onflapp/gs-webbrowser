@@ -14,9 +14,13 @@
     width: 100%;
     margin: 0;
   }
+  #dbgwin {
+    display: none;
+  }
 </style>
   </head>
   <body>
+    <div id="dbgwin">the content window</div>
     <webview id="main" src="about:blank" partition="persist:webbrowser"></webview>
   </body>
 </html>
