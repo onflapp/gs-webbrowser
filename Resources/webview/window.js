@@ -1,3 +1,7 @@
+window.config = {
+  zoom: 1.0
+};
+
 window.addEventListener('message', function(evt) {
   if (evt.origin.indexOf('chrome-extension://') == 0) {
     receiveCommand(evt.data);
@@ -17,9 +21,15 @@ window.addEventListener('load', function(evt) {
   window.mylasttitle = 0;
   window.mywebviewid = 'ASGGFD-webview-'+window.location.hash.substr(1);
 
+  window.mywebview.setZoom(window.config.zoom);
+  //window.mywebview.setZoomMode('per-view');
+
   document.title = window.mywebviewid;
 
   wv.addEventListener('loadstart', function(evt) {
+    //window.mywebview.setZoomMode('per-view');
+    window.mywebview.setZoom(window.config.zoom);
+
     sendCommand('ON_LOADING_START:'+evt.url);
   });
   wv.addEventListener('loadstop', function(evt) {
@@ -28,6 +38,10 @@ window.addEventListener('load', function(evt) {
     if (u.indexOf(window.myfileserver) === 0) {
       u = 'file://'+u.substr(window.myfileserver.length);
     }
+
+    //window.mywebview.setZoomMode('per-view');
+    window.mywebview.setZoom(window.config.zoom);
+
     sendCommand('ON_LOADING_STOP:'+u);
   });
   wv.addEventListener('message', function(evt) {
@@ -74,7 +88,6 @@ window.addEventListener('load', function(evt) {
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);
-
 });
 
 function checkTitle() {
@@ -120,6 +133,7 @@ function sendCommand(cmd) {
 
 CMD = {
   'LOAD': function(val) {
+    window.mywebview.setZoomMode('per-view');
     if (val.indexOf('file://') == 0) {
       var s = val.substr(7);
       var i = s.indexOf('/');
@@ -133,6 +147,13 @@ CMD = {
       window.mywebview.setAttribute('src', val);
     }
   },
+  'CONFIG': function(val) {
+    var cfg = JSON.parse(val);
+    if (cfg) {
+      window.config = cfg;
+      window.mywebview.setZoom(config.zoom);
+    }
+  },
   'BACK': function(val) {
     window.mywebview.back();
   },
@@ -143,7 +164,11 @@ CMD = {
     window.mywebview.reload();
   },
   'ZOOM': function(val) {
-    window.mywebview.setZoom(Number.parseFloat(val));
+    var zoom = Number.parseFloat(val);
+    if (zoom > 0) {
+      window.config.zoom = zoom;
+      window.mywebview.setZoom(zoom);
+    }
   },
   'CUT': function(val) {
     window.mywebview.executeScript({code:'document.execCommand("cut")'});

@@ -12,7 +12,8 @@
   ChromeController* chromeController = [ChromeController sharedInstance];
   [chromeController ensureChromeControllerIsReady:self];
 
-  viewZoom = 1;
+  viewZoom = [[NSUserDefaults standardUserDefaults] floatForKey: @"zoom_factor"];
+  if (viewZoom < 0.2) viewZoom = 1.0;
 
   return self;
 }
@@ -39,6 +40,23 @@
   [super destroyXWindow];
 }
 
+- (void) __sendConfig {
+  NSMutableString* cfg = [NSMutableString string];
+  float zoom = [[NSUserDefaults standardUserDefaults] floatForKey: @"zoom_factor"];
+  float gsscale = [[NSUserDefaults standardUserDefaults] floatForKey: @"GSScaleFactor"];
+
+  if (gsscale < 0.2) gsscale = 1.0;
+  if (zoom < 0.2) zoom = 1.0;
+
+  zoom = (zoom * gsscale);
+
+  [cfg appendString:@"{"];
+  [cfg appendFormat:@"\"zoom\":%f", zoom];
+  [cfg appendString:@"}"];
+
+  [self sendCommand:[NSString stringWithFormat:@"CONFIG:%@", cfg]];
+}
+
 - (void) __remapWebView:(NSString*) val {
   NSLog(@"ready: %@", val);
   Window w = [self findXWindowID:val];
@@ -60,6 +78,7 @@
   NSString* val = [cmd substringFromIndex:r.location+1];
   
   if ([nm isEqual:@"ON_READY"]) {
+    [self __sendConfig];
     [self performSelector:@selector(__remapWebView:) withObject:val afterDelay:0.1];
   }
   if ([nm isEqual:@"ON_FOCUS"]) {
@@ -231,7 +250,13 @@
   else {
     viewZoom = 1;
   }
-  [self sendCommand:[NSString stringWithFormat:@"ZOOM:%f", viewZoom]];
+
+  [[NSUserDefaults standardUserDefaults] setFloat:viewZoom forKey: @"zoom_factor"];
+
+  float gsscale = [[NSUserDefaults standardUserDefaults] floatForKey: @"GSScaleFactor"];
+  if (gsscale < 0.2) gsscale = 1.0;
+
+  [self sendCommand:[NSString stringWithFormat:@"ZOOM:%f", (viewZoom*gsscale)]];
 }
 
 - (void) performFindPanelAction:(id) sender {
