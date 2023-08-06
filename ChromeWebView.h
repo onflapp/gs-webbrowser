@@ -17,6 +17,7 @@
   IBOutlet id delegate;
   BOOL ready;
   NSURL* initialURL;
+  NSURL* lastValidURL;
   NSString* __jsretval;
 
   CGFloat viewZoom;

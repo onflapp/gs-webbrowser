@@ -16,12 +16,9 @@ chrome.app.runtime.onLaunched.addListener(function(evt) {
   });
 });
 
-/*
 chrome.runtime.onSuspend.addListener(function(evt) {
-  window.mypidfile.remove(function(rv) {
-  });
+  console.log('suspended');
 });
-*/
 
 function DataConnection(sockId) {
   var that = this;

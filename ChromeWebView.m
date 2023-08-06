@@ -22,6 +22,9 @@
   [initialURL release];
   initialURL = nil;
 
+  [lastValidURL release];
+  lastValidURL = nil;
+
   [__jsretval release];
   __jsretval = nil;
 
@@ -38,6 +41,17 @@
 
   [self disconnectController];
   [super destroyXWindow];
+}
+
+- (void) notifyXWindowEventsHasEnded {
+  if (!closingwindow && ready) {
+    NSLog(@"seems like we lost the webview");
+  }
+}
+
+- (void) restartController {
+  ChromeController* chromeController = [ChromeController sharedInstance];
+  [chromeController ensureChromeControllerIsReady:self];
 }
 
 - (void) __sendConfig {
@@ -93,7 +107,11 @@
     [delegate webView:self didStartLoading:[NSURL URLWithString:val]];
   }
   if ([nm isEqual:@"ON_LOADING_STOP"]) {
-    [delegate webView:self didFinishLoading:[NSURL URLWithString:val]];
+    NSURL* url = [NSURL URLWithString:val];
+    [lastValidURL release];
+    lastValidURL = [url retain];
+
+    [delegate webView:self didFinishLoading:url];
   }
   if ([nm isEqual:@"ON_TITLE"]) {
     [delegate webView:self didChangeTitle:val];
@@ -135,6 +153,14 @@
   return delegate;
 }
 
+- (void) reconnectAndReload {
+  [initialURL release];
+  
+  if (lastValidURL) initialURL = [lastValidURL retain];
+
+  [self restartController];
+}
+
 - (void) loadURL:(NSURL*) url {
   if (!url) return;
 
@@ -145,7 +171,19 @@
     url = [NSURL URLWithString:u];
   }
 
-  if (ready) [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", url]];
+  if (ready) {
+    if (xwindowid != 0) {
+      [self sendCommand:[NSString stringWithFormat:@"LOAD:%@", url]];
+    }
+    else {
+      NSLog(@"we lost our webview, reconnect");
+
+      [initialURL release];
+      initialURL = [url retain];
+
+      [self restartController];
+    }
+  }
   else {
     [initialURL release];
     initialURL = [url retain];

@@ -159,6 +159,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (void) windowWillClose:(NSNotification*) note {
+  closingwindow = YES;
   if ([note object] == [self window]) {
     [self destroyXWindow];
   }
@@ -358,6 +359,9 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   [self performSelectorInBackground:@selector(processXWindowsEvents:) withObject:self];
 }
 
+- (void) notifyXWindowEventsHasEnded { 
+}
+
 - (void) processXWindowsEvents:(id) sender {
   XInitThreads();
 
@@ -457,7 +461,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSLog(@"we are done here");
 
   xwindowid = 0;
-}
 
+  [self performSelectorOnMainThread:@selector(notifyXWindowEventsHasEnded) withObject:nil waitUntilDone:NO];
+}
 
 @end
