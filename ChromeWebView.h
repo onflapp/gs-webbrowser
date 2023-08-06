@@ -10,6 +10,7 @@
 - (void) webView:(id)webView didStartLoading:(NSURL*) url;
 - (void) webView:(id)webView didFinishLoading:(NSURL*) url;
 - (void) webView:(id)webView didChangeTitle:(NSString*) title;
+- (void) webView:(id)webView didChangeStatus:(NSString*) title;
 
 @end
 
@@ -21,6 +22,7 @@
   NSString* __jsretval;
 
   CGFloat viewZoom;
+  NSTimeInterval lastEvent;
 }
 
 - (void) setDelegate:(id) del;

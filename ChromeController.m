@@ -15,6 +15,9 @@ static ChromeController* chromeController = nil;
   pidfile = [config stringByAppendingPathComponent:appname];
   pidfile = [pidfile stringByAppendingPathComponent:@"controller.pid"];
   [pidfile retain];
+
+  currentDelegate = nil;
+  delegates = [[NSMutableArray alloc] init];
   
   return self;
 }
@@ -26,6 +29,9 @@ static ChromeController* chromeController = nil;
 
 - (void) dealloc {
   chromeController = nil;
+  currentDelegate = nil;
+  [delegates release];
+  delegates = nil;
 
   [task release];
   task = nil;
@@ -49,6 +55,16 @@ static ChromeController* chromeController = nil;
 
   if (!pidfile || !running) return;
 
+  if (currentDelegate == nil) {
+    NSLog(@"first delegate trying to connect");
+    currentDelegate = del;
+  }
+  else if (currentDelegate != del) {
+    NSLog(@"other delegate is trying to connect, queue");
+    [delegates addObject:del];
+    return;
+  }
+
   NSInteger p = [self processPort];
   if (p > 0) {
     NSLog(@"try to connect to %d", p);
@@ -56,6 +72,15 @@ static ChromeController* chromeController = nil;
     if (remote) {
       NSLog(@"connected");
       [del chromeController:self isReady:remote];
+      currentDelegate = nil;
+
+      if ([delegates count] > 0) {
+        id ndel = [delegates objectAtIndex:0];
+        if (ndel) {
+          [delegates removeObjectAtIndex:0];
+          [self performSelector:@selector(ensureChromeControllerIsReady:) withObject: ndel afterDelay:1.0];
+        }
+      }
     }
     else {
       NSLog(@"did not connect, try again");

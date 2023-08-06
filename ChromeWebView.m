@@ -46,6 +46,17 @@
 - (void) notifyXWindowEventsHasEnded {
   if (!closingwindow && ready) {
     NSLog(@"seems like we lost the webview");
+  
+    [delegate webView:self didChangeStatus:@"connection lost"];
+    lastEvent = [[NSDate date]timeIntervalSince1970];
+    [self performSelector:@selector(__checkIfStillHere) withObject:nil afterDelay:2.0];
+  }
+}
+
+- (void) __checkIfStillHere {
+  NSInteger dd = [[NSDate date]timeIntervalSince1970] - lastEvent;
+  if (dd > 5) {
+    [self reconnectAndReload];
   }
 }
 
@@ -157,6 +168,9 @@
   [initialURL release];
   
   if (lastValidURL) initialURL = [lastValidURL retain];
+
+  [delegate webView:self didChangeStatus:@"reconnecting..."];
+  NSLog(@"reconnecting: %@", lastValidURL);
 
   [self restartController];
 }

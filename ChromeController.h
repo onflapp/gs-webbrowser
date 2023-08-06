@@ -13,6 +13,8 @@
   NSString* pidfile;
   NSString* appname;
   BOOL running;
+  NSMutableArray* delegates;
+  id currentDelegate;
 }
 
 + (ChromeController*) sharedInstance;

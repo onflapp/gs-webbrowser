@@ -241,4 +241,8 @@ NSInteger checkURLValidity(NSString *urlString) {
   }
 }
 
+- (void) webView:(id)webView didChangeStatus:(NSString*) title {
+  [statusField setStringValue:title];
+}
+
 @end
