@@ -6,7 +6,7 @@
     AppHomeURL = "https://twitter.com/home";
     CFBundleURLTypes = (
 	{
-	    CFBundleURLName = "Web site URL";
+	    CFBundleURLName = "Twitter URL";
 	    CFBundleURLSchemes = (
 		twitter,
 	    );

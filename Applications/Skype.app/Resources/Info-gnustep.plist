@@ -6,10 +6,9 @@
     AppHomeURL = "https://web.skype.com/";
     CFBundleURLTypes = (
 	{
-	    CFBundleURLName = "Web site URL";
+	    CFBundleURLName = "Skype URL";
 	    CFBundleURLSchemes = (
-		http,
-		https
+		skype
 	    );
 	}
     );

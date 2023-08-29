@@ -6,10 +6,9 @@
     AppHomeURL = "https://youtube.com/";
     CFBundleURLTypes = (
 	{
-	    CFBundleURLName = "Web site URL";
+	    CFBundleURLName = "YouTube URL";
 	    CFBundleURLSchemes = (
-		http,
-		https
+		youtube
 	    );
 	}
     );
