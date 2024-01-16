@@ -113,6 +113,7 @@
 }
 
 - (void) connection:(NSURLConnection*) con didReceiveResponse:(NSURLResponse*) resp {
+  NSLog(@"xxxxxxxxx:%@", resp);
   NSString* name = [self __suggestName:resp];
   if (!name) name = @"download.tmp";
 
