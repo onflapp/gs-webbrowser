@@ -29,7 +29,7 @@ static NSWindow* _lastMainWindow;
 
 // Function to check URL validity and presence of "https://"
 NSInteger checkURLValidity(NSString *urlString) {
-    NSString *httpsPattern = @"^https://";
+    NSString *httpsPattern = @"^https?://";
     //NSString *urlPattern = @"^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
 	NSString *urlPattern = @"^(http://|https://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
 	

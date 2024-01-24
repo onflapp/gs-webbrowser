@@ -46,6 +46,7 @@
 - (id) initWithURL:(NSURL*)url;
 - (NSWindow*) window;
 
+- (IBAction) startDownload:(id) sender;
 - (IBAction) saveFile:(id) sender;
 - (IBAction) openFile:(id) sender;
 @end
