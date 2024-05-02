@@ -1,0 +1,6 @@
+derived_src
+obj
+*.app
+*.o
+*.m.d
+tags

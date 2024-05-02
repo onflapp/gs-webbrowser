@@ -1,6 +1,7 @@
 #import "ChromeWebView.h"
 #import "FindPanel.h"
 #import "DownloadPanel.h"
+#import "DownloadStatusPanel.h"
 #import "LinkPanel.h"
 #include <X11/Xlib.h>
 
@@ -139,7 +140,9 @@
   if ([nm isEqual:@"ON_DOWNLOAD"]) {
     NSURL* url = [NSURL URLWithString:val];
     if (url) {
-      [self requestDownload:url];
+      NSLog(@"requested download %@", url);
+      //[self requestDownload:url];
+      [self followDownload:url];
     }
   }
 }
@@ -147,6 +150,13 @@
 - (void) showLinkInfo:(NSURL*) url {
   LinkPanel* link = [LinkPanel sharedInstance];
   [link showLinkInfo:url forWebView:self];
+}
+
+- (void) followDownload:(NSURL*) url {
+  DownloadStatusPanel* download = [[DownloadStatusPanel alloc]initWithURL:url];
+  NSWindow* win = [download window];
+  //[[self window]addChildWindow:win ordered:NSWindowAbove];
+  [win performSelector:@selector(orderFront:) withObject:self afterDelay:0.1];
 }
 
 - (void) requestDownload:(NSURL*) url {

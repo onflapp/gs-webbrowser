@@ -37,6 +37,7 @@ Resources/Document.gorm \
 Resources/Preferences.gorm \
 Resources/FindPanel.gorm \
 Resources/DownloadPanel.gorm \
+Resources/DownloadStatusPanel.gorm \
 Resources/LinkPanel.gorm \
 Resources/Home.tiff \
 Resources/Left.tiff \
@@ -64,6 +65,7 @@ ExternalWebView.h \
 ChromeController.h \
 FindPanel.h \
 DownloadPanel.h \
+DownloadStatusPanel.h \
 LinkPanel.h \
 BrowserWindow.h \
 BrowserApp.h \
@@ -85,6 +87,7 @@ ExternalWebView.m \
 ChromeController.m \
 FindPanel.m \
 DownloadPanel.m \
+DownloadStatusPanel.m \
 LinkPanel.m \
 BrowserWindow.m \
 BrowserApp.m \

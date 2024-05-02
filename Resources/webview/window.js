@@ -23,6 +23,11 @@ window.addEventListener('click', function(evt) {
 
 window.addEventListener('load', function(evt) {
   var wv = document.getElementById('main');
+  if (!wv) {
+    console.log('#main not found!');
+    return;
+  }
+
   window.mywebview = wv;
   window.mylasttitle = 0;
   window.mywebviewid = 'ASGGFD-webview-'+window.location.hash.substr(1);
@@ -83,15 +88,15 @@ window.addEventListener('load', function(evt) {
   });
 
   wv.addEventListener('permissionrequest', function(evt) {
+    console.log(evt);
     if (evt.permission === 'download') {
       sendCommand('ON_DOWNLOAD:'+evt.request.url);
-      evt.request.deny();
+      evt.request.allow();
     }
     else {
       evt.request.allow();
     }
     evt.preventDefault();
-    console.log(evt);
   });
 
   wv.addEventListener('contentload', function(evt) {

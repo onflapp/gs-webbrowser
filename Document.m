@@ -173,9 +173,11 @@ NSInteger checkURLValidity(NSString *urlString) {
   NSInteger valid = checkURLValidity(val);
   if (valid == 2) {
      url = [NSURL URLWithString:val];
-  } else if (valid  == 1) {
+  }
+  else if (valid  == 1) {
      url = [NSURL URLWithString:[@"https://" stringByAppendingString: val]];
-  } else {
+  }
+  else {
     val = [val stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString* search = [NSString stringWithFormat:@"%@%@", [MYConfig valueForKey:@"SEARCH_ADDRESS"], val];
     url = [NSURL URLWithString:search];
