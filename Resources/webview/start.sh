@@ -40,6 +40,7 @@ echo "" > "$LOCK"
 
 cd "$WDIR"
 "$CHROME" \
+  --disable-smooth-scrolling \
   --enable-widevine --user-data-dir=$DDIR --silent-launch \
   --load-and-launch-app=`pwd` "$PIDF" 2>/dev/null
 
