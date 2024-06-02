@@ -18,6 +18,7 @@ if [ -z "$CHROME" ];then
   exit 10
 fi
 
+#ARGS="--disable-smooth-scrolling"
 DDIR="$HOME/Library/$APPNAME/Profile"
 WDIR="$HOME/Library/$APPNAME/webview.tmp"
 PIDF="$HOME/Library/$APPNAME/controller.pid"
@@ -39,8 +40,7 @@ echo "" > "$PIDF"
 echo "" > "$LOCK"
 
 cd "$WDIR"
-"$CHROME" \
-  --disable-smooth-scrolling \
+"$CHROME" $ARGS \
   --enable-widevine --user-data-dir=$DDIR --silent-launch \
   --load-and-launch-app=`pwd` "$PIDF" 2>/dev/null
 
