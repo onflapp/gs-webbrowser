@@ -76,7 +76,8 @@
 
   while ([data length] > 0) {
     const char* bytes = [data bytes];
-    for (int i = 0; i < [data length]; i++) {
+    int i;
+    for (i = 0; i < [data length]; i++) {
       char ch = *(bytes+i);
       if (ch == '\n') {
         nr++;

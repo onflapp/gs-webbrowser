@@ -52,6 +52,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
 - (void) remapXWindow:(Window)xwinid;
 
 - (Window) embededXWindowID;
+- (NSRect) convertToNativeWindowRect;
 
 @end
 

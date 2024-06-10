@@ -223,7 +223,8 @@
   NSString* code = [js stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
   [self sendCommand:[NSString stringWithFormat:@"EXEC:%@", code]];
 
-  for (NSInteger i = 0; i < 10; i++) {
+  NSInteger i;
+  for (i = 0; i < 10; i++) {
     if (__jsretval) break;
 
     NSDate* limit = [NSDate dateWithTimeIntervalSinceNow:0.1];
