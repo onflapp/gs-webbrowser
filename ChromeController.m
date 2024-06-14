@@ -117,8 +117,8 @@ static ChromeController* chromeController = nil;
   NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];
 
   task = [[NSTask alloc] init];
-  [task setLaunchPath:@"/bin/bash"];
-  [task setArguments:[NSArray arrayWithObjects:path, appname, nil]];
+  [task setLaunchPath:path];
+  [task setArguments:[NSArray arrayWithObjects:appname, nil]];
   [task setCurrentDirectoryPath:wp];
 
   [[NSNotificationCenter defaultCenter]

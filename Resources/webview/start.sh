@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function cleanup {
   rm "$LOCK" 2>/dev/null
