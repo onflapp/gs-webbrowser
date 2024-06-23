@@ -28,6 +28,11 @@
 #include "X11/Xutil.h"
 #include "X11/keysymdef.h"
 
+Display* currentXDisplay() {
+  GSDisplayServer *server = GSCurrentServer();
+  return (Display *)[server serverDevice];
+}
+
 void save_found_wmclass(char* wmname, char* wmclass) {
   NSUserDefaults* cfg = [NSUserDefaults standardUserDefaults];
 
@@ -293,7 +298,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 }
 
 - (Window) findXWindowID:(NSString*) name {
-  Display* dpy = XOpenDisplay(NULL);
+  Display *dpy = currentXDisplay();
+
   Window rootWindow = XDefaultRootWindow(dpy);
   Window foundWindow = find_xwinid_wmclass(dpy, rootWindow, [name UTF8String]);
   return foundWindow;
@@ -330,7 +336,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
 - (void) remapXWindow:(Window) xwinid {  
   Window myxwindowid = (Window)[[self window]windowRef];
-  xdisplay = XOpenDisplay(NULL);
+  xdisplay = currentXDisplay();
   xwindowid = xwinid;
   
   XReparentWindow(xdisplay, xwindowid, myxwindowid, 0, 0);
@@ -461,6 +467,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   NSLog(@"we are done here");
 
   xwindowid = 0;
+  //XCloseDisplay(d);
 
   [self performSelectorOnMainThread:@selector(notifyXWindowEventsHasEnded) withObject:nil waitUntilDone:NO];
 }
