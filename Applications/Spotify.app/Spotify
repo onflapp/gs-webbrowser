@@ -2,4 +2,4 @@
 F=`realpath "$0"`
 D=`dirname "$F"`
 export MAIN_WEBBROWSER_BUNDLE="$D"
-exec -a YouTube /Applications/WebBrowser.app/WebBrowser $@
+exec -a Spotify /Applications/WebBrowser.app/WebBrowser $@

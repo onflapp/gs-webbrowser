@@ -1,0 +1,46 @@
+{
+    "## Comment" = "Do NOT change this file, Gorm maintains it";
+    DownloadPanel = {
+	Actions = (
+	    "takeAction:"
+	);
+	Outlets = (
+	    addressField,
+	    statusField,
+	    window,
+	    actionButton
+	);
+	Super = NSObject;
+    };
+    FindPanel = {
+	Actions = (
+	    "orderFrontFindPanel:",
+	    "performFindPanelAction:"
+	);
+	Outlets = (
+	    panel,
+	    findText
+	);
+	Super = NSObject;
+    };
+    FirstResponder = {
+	Actions = (
+	    "takeAction:",
+	    "findPrevious:",
+	    "newAction:",
+	    "orderFrontFindPanel:"
+	);
+	Super = NSObject;
+    };
+    LinkPanel = {
+	Actions = (
+	    "takeAction:"
+	);
+	Outlets = (
+	    addressField,
+	    actionButton,
+	    window
+	);
+	Super = NSObject;
+    };
+}

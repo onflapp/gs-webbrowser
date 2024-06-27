@@ -97,7 +97,7 @@ static ChromeController* chromeController = nil;
 
 - (NSInteger) processPort {
   NSString* str = [NSString stringWithContentsOfFile:pidfile];
-  NSLog(@">>>> %@ [%@]", pidfile, str);
+  NSLog(@"PID:%@ [%@]", pidfile, str);
   if (!str) return -1;
   else {
     return [str integerValue];
@@ -113,7 +113,14 @@ static ChromeController* chromeController = nil;
 }
 
 - (void) launchProcess {
+  NSString* ap = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"WebBrowser.app"];
   NSString* wp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"webview"];
+
+  if (ap && getenv("MAIN_WEBBROWSER_BUNDLE") != NULL) {
+    wp = [ap stringByAppendingPathComponent:@"/Resources/webview"];
+    NSLog(@"use WebBrowser.app path %@", wp);
+  }
+
   NSString* path = [wp stringByAppendingPathComponent:@"start.sh"];
 
   task = [[NSTask alloc] init];

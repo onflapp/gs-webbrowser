@@ -1,0 +1,25 @@
+{
+    ApplicationDescription = "No description avaliable!";
+    ApplicationIcon = "Spotify.tiff";
+    ApplicationName = Spotify;
+    ApplicationRelease = "0.1";
+    AppHomeURL = "https://open.spotify.com/";
+    CFBundleURLTypes = (
+	{
+	    CFBundleURLName = "Spotify URL";
+	    CFBundleURLSchemes = (
+		spotify
+	    );
+	}
+    );
+    Copyright = "Copyright (C) 200x";
+    CopyrightDescription = "Released under ...";
+    FullVersionID = "0.1";
+    GSMainMarkupFile = "";
+    NSExecutable = Spotify;
+    NSIcon = "Spotify.tiff";
+    NSMainNibFile = "WebBrowser.gorm";
+    NSMainStoryboardFile = "";
+    NSPrincipalClass = BrowserApp;
+    NSRole = Application;
+}

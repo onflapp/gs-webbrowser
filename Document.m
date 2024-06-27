@@ -219,6 +219,10 @@ NSInteger checkURLValidity(NSString *urlString) {
 
   [window setDelegate: nil];
   [self release];
+
+  if ([MYConfig valueForKey:@"AppHomeURL"] != nil && [[[NSApp delegate] documents] count] == 0) {
+    [NSApp terminate:self];
+  }
 }
 
 - (void) webView:(id)webView didStartLoading:(NSURL*) url {

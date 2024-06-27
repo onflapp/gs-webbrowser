@@ -25,6 +25,7 @@
 #import "XEmbeddedView.h"
 #import <GNUstepGUI/GSDisplayServer.h>
 #include "xembed.h"
+#include <unistd.h>
 #include "X11/Xutil.h"
 #include "X11/keysymdef.h"
 
@@ -370,6 +371,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 
 - (void) processXWindowsEvents:(id) sender {
   XInitThreads();
+  CREATE_AUTORELEASE_POOL(pool);
 
   Window ws = (Window)[[sender window]windowRef];
   Window we = (Window)[sender embededXWindowID];
@@ -470,6 +472,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
   //XCloseDisplay(d);
 
   [self performSelectorOnMainThread:@selector(notifyXWindowEventsHasEnded) withObject:nil waitUntilDone:NO];
+  RELEASE(pool);
 }
 
 @end

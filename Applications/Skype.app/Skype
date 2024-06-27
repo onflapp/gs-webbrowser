@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 F=`realpath "$0"`
 D=`dirname "$F"`
 export MAIN_WEBBROWSER_BUNDLE="$D"
