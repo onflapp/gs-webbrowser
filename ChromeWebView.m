@@ -103,6 +103,12 @@
   NSString* nm = [cmd substringToIndex:r.location];
   NSString* val = [cmd substringFromIndex:r.location+1];
   
+  if ([nm isEqual:@"ON_FULLSCREEN"]) {
+    BOOL fs = YES;
+    if ([val isEqual:@"false"]) fs = NO;
+
+    [delegate webView:self didChangeFullScreen:fs];
+  }
   if ([nm isEqual:@"ON_READY"]) {
     [self __sendConfig];
     [self performSelector:@selector(__remapWebView:) withObject:val afterDelay:0.1];

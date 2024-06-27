@@ -234,6 +234,10 @@ NSInteger checkURLValidity(NSString *urlString) {
   ASSIGN(currentURL, [url description]);
 }
 
+- (void) webView:(id)webView didChangeFullScreen:(BOOL) fullScreen {
+  [window setFullScreen:fullScreen];
+}
+
 - (void) webView:(id)webView didChangeTitle:(NSString*) title {
   if (title) {
     [window setTitle:title];

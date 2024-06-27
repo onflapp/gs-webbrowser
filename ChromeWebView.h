@@ -11,6 +11,7 @@
 - (void) webView:(id)webView didFinishLoading:(NSURL*) url;
 - (void) webView:(id)webView didChangeTitle:(NSString*) title;
 - (void) webView:(id)webView didChangeStatus:(NSString*) title;
+- (void) webView:(id)webView didChangeFullScreen:(BOOL) fullScreen;
 
 @end
 

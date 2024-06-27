@@ -23,7 +23,42 @@
 */
 
 #import "BrowserWindow.h"
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <GNUstepGUI/GSDisplayServer.h>
 
 @implementation BrowserWindow
+- (void) setFullScreen:(BOOL) fullScreenDisplay {
+  GSDisplayServer *server = GSCurrentServer();
+  Display *dpy = (Display *)[server serverDevice];
+  Window wid = (Window)[self windowRef];
+  XEvent xev;
+
+  Atom wm_state = XInternAtom(dpy, "_NET_WM_STATE", True);
+  Atom fullscreen = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", True);
+  long mask = SubstructureNotifyMask;
+
+  memset(&xev, 0, sizeof(xev));
+  xev.type = ClientMessage;
+  xev.xclient.display = dpy;
+  xev.xclient.window = wid;
+  xev.xclient.message_type = wm_state;
+  xev.xclient.format = 32;
+  xev.xclient.data.l[1] = fullscreen;
+
+  if (fullScreenDisplay) {
+    xev.xclient.data.l[0] = True;
+    lastStyle = _styleMask;
+    _styleMask = 0;
+  }
+  else {
+    xev.xclient.data.l[0] = False;
+    _styleMask = lastStyle;
+  }
+
+  if (!XSendEvent(dpy, DefaultRootWindow(dpy), False, mask, &xev)) {
+    fprintf(stderr, "Error: sending fullscreen event to xserver\n");
+  }
+}
 
 @end

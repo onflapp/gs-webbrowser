@@ -96,32 +96,27 @@ window.addEventListener('load', function(evt) {
     else {
       evt.request.allow();
     }
-    evt.preventDefault();
+    //evt.preventDefault();
   });
 
   wv.addEventListener('contentload', function(evt) {
     if (window.mylasttitle === 0) {
       checkTitle();
     }
-  /* try to avoid injecting any code into the website
+  /* try to avoid injecting any code into the website */
     this.executeScript({
       code: 
       'window.addEventListener("message", function(e) {' +
         'if (e.data == "init") {' +
-          'window.addEventListener("mouseup", function(evt) { ' +
-            'if (evt.button > 0 && evt.target.tagName === "A") {' +
-              'console.log(evt);' +
-              'e.source.postMessage("ON_LINK_INFO:"+evt.target.href, "*"); ' +
-            '}' +
+          'window.addEventListener("fullscreenchange", function(evt) { ' +
+            'e.source.postMessage("ON_FULLSCREEN:"+document.fullscreen, "*"); ' +
           '});' +
-          'e.source.postMessage("ON_TITLE:"+window.document.title, "*"); ' +
         '}' +
       '})'
     });
     setTimeout(function() {
         wv.contentWindow.postMessage('init', '*');
     },200);
-  */
   });
 
   sendCommand('ON_READY:'+window.mywebviewid);

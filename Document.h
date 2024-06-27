@@ -27,10 +27,11 @@
 
 #import <AppKit/AppKit.h>
 #import "ChromeWebView.h"
+#import "BrowserWindow.h"
 
 @interface Document : NSObject
 {
-  IBOutlet NSWindow *window;
+  IBOutlet BrowserWindow *window;
   IBOutlet ChromeWebView* webView;
   IBOutlet NSTextField* addressField;
   IBOutlet NSTextField* statusField;

@@ -22,6 +22,8 @@ static NSBundle* __my_main_bundle;
 @end
 
 int main(int argc, const char *argv[]) {
+  CREATE_AUTORELEASE_POOL(pool);
+
   char *bundle_env = getenv("MAIN_WEBBROWSER_BUNDLE");
   if (bundle_env != NULL) {
     NSString* apppath = [[NSString alloc] initWithCString:bundle_env];
@@ -33,5 +35,8 @@ int main(int argc, const char *argv[]) {
     __my_main_bundle = [NSBundle bundleWithPath:apppath];
   }
 
-  return NSApplicationMain(argc, argv);
+  int rv = NSApplicationMain(argc, argv);
+  RELEASE(pool);
+
+  return rv;
 }

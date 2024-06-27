@@ -29,8 +29,10 @@
 
 @interface BrowserWindow : NSWindow
 {
+   int lastStyle;
 }
 
+- (void) setFullScreen:(BOOL) fullScreenDisplay;
 @end
 
 #endif // _BROWSERWINDOW_H_
