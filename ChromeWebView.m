@@ -11,7 +11,7 @@
   self = [super initWithFrame:r];
   
   ChromeController* chromeController = [ChromeController sharedInstance];
-  [chromeController ensureChromeControllerIsReady:self];
+  [chromeController ensureChromeControllerIsReady:(ChromeControllerDelegate*)self];
 
   viewZoom = [[NSUserDefaults standardUserDefaults] floatForKey: @"zoom_factor"];
   if (viewZoom < 0.2) viewZoom = 1.0;
@@ -63,7 +63,7 @@
 
 - (void) restartController {
   ChromeController* chromeController = [ChromeController sharedInstance];
-  [chromeController ensureChromeControllerIsReady:self];
+  [chromeController ensureChromeControllerIsReady:(ChromeControllerDelegate*)self];
 }
 
 - (void) __sendConfig {

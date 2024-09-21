@@ -34,23 +34,35 @@ Display* currentXDisplay() {
   return (Display *)[server serverDevice];
 }
 
-void save_found_wmclass(char* wmname, char* wmclass) {
+void save_found_wmclass(unsigned char* wmname, unsigned char* wmclass) {
   NSUserDefaults* cfg = [NSUserDefaults standardUserDefaults];
 
   if (wmclass) {
-    NSString* str = [[NSString alloc]initWithCString:wmclass];
+    NSString* str = [[NSString alloc]initWithCString:(const char*)wmclass];
     [cfg setValue:str forKey:@"xembedded_last_wmclass"];
     [str release];
   }
 
   if (wmname) {
-    NSString* str = [[NSString alloc]initWithCString:wmname];
+    NSString* str = [[NSString alloc]initWithCString:(const char*)wmname];
     [cfg setValue:str forKey:@"xembedded_last_wmname"];
     [str release];
   }
 }
 
-Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
+BOOL pointer_over_window(Display* dpy, Window win) {
+  Window w;
+  Window r;
+  int rx, ry, x, y;
+  unsigned int m;
+
+  if (XQueryPointer(dpy, win, &r, &w, &rx, &ry, &x, &y, &m)) {
+    return YES;
+  }
+  else return NO;
+}
+
+Window find_xwinid_wmclass(Display* dpy, Window rootWindow, const char* wmclass) {
   Window *children;
   Window parent;
   Window root;
@@ -106,7 +118,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        
     if (rv == Success && prop_class) {
       //NSLog(@"CLASS >>>> %x %s", win, prop_class);
-      if (strcmp(prop_class, wmclass) == 0) {
+      if (strcmp((const char*)prop_class, wmclass) == 0) {
         found = win;
         save_found_wmclass(NULL, prop_class);
         break;
@@ -122,7 +134,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
                        
     if (rv == Success && prop_name) {
       //NSLog(@"NAME >>>> %x %d %s", win, wattrs.map_state, prop_name);
-      if (strcmp(prop_name, wmclass) == 0) {
+      if (strcmp((const char*)prop_name, wmclass) == 0) {
         found = win;
         save_found_wmclass(prop_name, prop_class);
         break;
@@ -232,14 +244,6 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
 - (BOOL) becomeFirstResponder {
   if (!isactive) {
     isactive = YES;
-    //NSLog(@"FOCUS %x", self);
-
-    /*
-    [NSApp delayDeactivation];
-    sendclientmsg(xdisplay, root, ignore_focus, 1);
-    XSetInputFocus(xdisplay, xwindowid, RevertToParent, CurrentTime);
-    XFlush(xdisplay);
-    */
   }
   return YES;
 }
@@ -397,7 +401,7 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     if (e.type == EnterNotify) {
       XGetInputFocus(d, &wf, &wr);
       if (wf != None && wf != we) {
-        //NSLog(@"M - GRAB");
+        NSLog(@"M1 - GRAB");
         XGrabButton(d, AnyButton, AnyModifier, we, 1, ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
         XGrabKey(d, AnyKey, AnyModifier, we, 1, GrabModeAsync, GrabModeAsync);
         XFlush(d);
@@ -406,8 +410,9 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
       }
     }
     else if (e.type == LeaveNotify) {
-      if (grabbing_mouse) {
-        //NSLog(@"M - UN GRAB");
+      BOOL wf = pointer_over_window(d, we);
+      if (grabbing_mouse && wf == NO) {
+        NSLog(@"M2 - UN GRAB");
         XUngrabButton(d, AnyButton, AnyModifier, we);
         XUngrabKey(d, AnyKey, AnyModifier, we);
         XFlush(d);
@@ -417,27 +422,28 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass) {
     else if (e.type == ButtonPress) {
       if (e.xbutton.button == Button1 || [NSApp isActive]) {
         if (grabbing_mouse) {
-          //NSLog(@"M - UN GRAB");
+          NSLog(@"M3 - UN GRAB");
           XUngrabButton(d, AnyButton, AnyModifier, we);
           XSync(xdisplay, True);
           grabbing_mouse = NO;
         }
         
         if (wf != None && wf != we) {
+          usleep(50000);
           [NSApp performSelectorOnMainThread:@selector(disableDeactivation) withObject:nil waitUntilDone:NO];
           [sender performSelectorOnMainThread:@selector(activateXWindow) withObject:nil waitUntilDone:NO];
 
           //NSLog(@"XSetInputFocus %x", we);
           sendclientmsg(d, root, ignore_focus, 1);
-          usleep(200000);
+          usleep(50000);
             
           XSetInputFocus(d, we, RevertToParent, CurrentTime);
           XSync(xdisplay, True);
 
-          usleep(200000);
+          usleep(50000);
           sendclientmsg(d, root, ignore_focus, 0);
 
-          [NSApp performSelectorOnMainThread:@selector(enableDeactivation) withObject:nil waitUntilDone:NO];
+          [NSApp performSelectorOnMainThread:@selector(enableDeactivationAfterDelay) withObject:nil waitUntilDone:NO];
         }
       }
       XAllowEvents(d, ReplayPointer, e.xbutton.time);

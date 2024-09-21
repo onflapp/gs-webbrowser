@@ -28,7 +28,8 @@
 #import <AppKit/AppKit.h>
 #include <X11/Xlib.h>
 
-Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
+Window find_xwinid_wmclass(Display* dpy, Window rootWindow, const char* wmclass);
+BOOL pointer_over_window(Display* dpy, Window win);
 
 @interface XEmbeddedView : NSView
 {
@@ -50,6 +51,8 @@ Window find_xwinid_wmclass(Display* dpy, Window rootWindow, char* wmclass);
 - (void) activateXWindow;
 - (void) deactivateXWindow:(NSNotification*) note;
 - (void) remapXWindow:(Window)xwinid;
+- (void) unmapXWindow;
+- (void) resizeXWindow;
 
 - (Window) embededXWindowID;
 - (NSRect) convertToNativeWindowRect;

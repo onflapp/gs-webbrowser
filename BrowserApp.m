@@ -37,10 +37,17 @@
 }
 
 - (void) enableDeactivation {
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(enableDeactivation) object:nil]; 
   ignore_deactivation = NO;
 }
 
+- (void) enableDeactivationAfterDelay {
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(enableDeactivation) object:nil]; 
+  [self performSelector:@selector(enableDeactivation) withObject:nil afterDelay:0.5];
+}
+
 - (void) disableDeactivation {
+  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(enableDeactivation) object:nil]; 
   ignore_deactivation = YES;
 }
 

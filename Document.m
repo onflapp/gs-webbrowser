@@ -29,31 +29,35 @@ static NSWindow* _lastMainWindow;
 
 // Function to check URL validity and presence of "https://"
 NSInteger checkURLValidity(NSString *urlString) {
-    NSString *httpsPattern = @"^https?://";
-    //NSString *urlPattern = @"^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
-	NSString *urlPattern = @"^(http://|https://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
-	
-    NSRegularExpression *httpsRegex = [NSRegularExpression regularExpressionWithPattern:httpsPattern
-                                                                                 options:NSRegularExpressionCaseInsensitive
-                                                                                   error:nil];
-    NSRegularExpression *urlRegex = [NSRegularExpression regularExpressionWithPattern:urlPattern
-                                                                               options:NSRegularExpressionCaseInsensitive
-                                                                                 error:nil];
+  NSString* httpsPattern = @"^https?://";
+  NSString* urlPattern = @"^(http://|https://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
+  NSError* error = nil;
 
-    NSUInteger httpsMatches = [httpsRegex numberOfMatchesInString:urlString
+  NSRegularExpression *httpsRegex = [NSRegularExpression regularExpressionWithPattern:httpsPattern
+                                                                              options:NSRegularExpressionCaseInsensitive
+                                                                                error:&error];
+
+  NSRegularExpression *urlRegex = [NSRegularExpression regularExpressionWithPattern:urlPattern
+                                                                            options:NSRegularExpressionCaseInsensitive
+                                                                              error:&error];
+
+  NSUInteger httpsMatches = [httpsRegex numberOfMatchesInString:urlString
                                                           options:0
                                                             range:NSMakeRange(0, [urlString length])];
-    NSUInteger urlMatches = [urlRegex numberOfMatchesInString:urlString
+
+  NSUInteger urlMatches = [urlRegex numberOfMatchesInString:urlString
                                                       options:0
                                                         range:NSMakeRange(0, [urlString length])];
 
-    if (httpsMatches > 0) {
-        return 2; // URL is fully formed with "https://"
-    } else if (urlMatches > 0) {
-        return 1; // URL is valid but missing "https://"
-    } else {
-        return 0; // Not a valid URL
-    }
+  if (httpsMatches > 0) {
+    return 2; // URL is fully formed with "https://"
+  }
+  else if (urlMatches > 0) {
+    return 1; // URL is valid but missing "https://"
+  }
+  else {
+    return 0; // Not a valid URL
+  }
 }
 
 
@@ -160,7 +164,6 @@ NSInteger checkURLValidity(NSString *urlString) {
   //[[webView settings] mergeFromDictionary:[MYConfig valueForKey:@"WEBVIEW"]];
   [webView loadURL:url];
   [addressField setStringValue:[url description]];
-  [window makeFirstResponder:webView];
 }
 
 - (void) loadLocation:(id) sender {

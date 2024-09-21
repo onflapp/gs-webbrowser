@@ -29,7 +29,10 @@
 - (void) setDelegate:(id) del;
 - (id) delegate;
 
+- (void) reconnectAndReload;
 - (void) loadURL:(NSURL*) url;
+- (void) showLinkInfo:(NSURL*) url;
+- (void) followDownload:(NSURL*) url;
 
 - (NSString*) executeJavaScript:(NSString*) js;
 - (void) stopLoading:(id) sender;

@@ -36,6 +36,7 @@
 - (void) showPrefPanel: (id)sender;
 - (void) newDocument: (id)sender;
 - (void) showDebugWindow: (id)sender;
+- (Document*) documentForURL:(NSURL*) url;
 
 @end
 
