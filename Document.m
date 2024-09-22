@@ -92,6 +92,10 @@ NSInteger checkURLValidity(NSString *urlString) {
   return window;
 }
 
+- (NSView*) webView {
+  return webView;
+}
+
 - (void) showWindow {
   if ([window isVisible]) {
     [window makeKeyAndOrderFront:self];
@@ -111,6 +115,10 @@ NSInteger checkURLValidity(NSString *urlString) {
 
     [window makeKeyAndOrderFront:self];
   }
+}
+
+- (void) toggleFullScreen:(id) sender {
+  [window setFullScreen:![window isFullScreen]];
 }
 
 - (void) goHome:(id) sender {

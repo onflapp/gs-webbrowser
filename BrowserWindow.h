@@ -30,8 +30,12 @@
 @interface BrowserWindow : NSWindow
 {
    int lastStyle;
+   BOOL fullscreen;
+   NSRect lastFrame;
+   CGFloat lastFrameOffset;
 }
 
+- (BOOL) isFullScreen;
 - (void) setFullScreen:(BOOL) fullScreenDisplay;
 @end
 

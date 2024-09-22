@@ -28,14 +28,22 @@
 #include <GNUstepGUI/GSDisplayServer.h>
 
 @implementation BrowserWindow
+- (BOOL) isFullScreen {
+  return fullscreen;
+}
+
 - (void) setFullScreen:(BOOL) fullScreenDisplay {
+  if (fullScreenDisplay == fullscreen) {
+    return;
+  }
+
   GSDisplayServer *server = GSCurrentServer();
   Display *dpy = (Display *)[server serverDevice];
   Window wid = (Window)[self windowRef];
   XEvent xev;
 
   Atom wm_state = XInternAtom(dpy, "_NET_WM_STATE", True);
-  Atom fullscreen = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", True);
+  Atom fs = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", True);
   long mask = SubstructureNotifyMask;
 
   memset(&xev, 0, sizeof(xev));
@@ -44,21 +52,50 @@
   xev.xclient.window = wid;
   xev.xclient.message_type = wm_state;
   xev.xclient.format = 32;
-  xev.xclient.data.l[1] = fullscreen;
+  xev.xclient.data.l[1] = fs;
+
+  NSView* webView = (NSView*)[[self delegate] webView];
+  NSRect r = [webView frame];
 
   if (fullScreenDisplay) {
+    NSLog(@"fullscreen on");
     xev.xclient.data.l[0] = True;
     lastStyle = _styleMask;
+    lastFrame = [self frame];
     _styleMask = 0;
+    fullscreen = YES;
+    lastFrameOffset = [[self contentView] frame].size.height - r.size.height - 5;
+
+    [self setBackgroundColor:[NSColor blackColor]];
+    [webView setFrame:NSMakeRect(r.origin.x, r.origin.y, r.size.width, r.size.height + lastFrameOffset)];
   }
   else {
+    NSLog(@"fullscreen off");
     xev.xclient.data.l[0] = False;
     _styleMask = lastStyle;
+    fullscreen = NO;
+    lastFrame.size.width--;
+
+    [self setBackgroundColor:[NSColor windowBackgroundColor]];
+    [webView setFrame:NSMakeRect(r.origin.x, r.origin.y, r.size.width, r.size.height - lastFrameOffset)];
+    [self setFrame:lastFrame display:YES];
+    [self performSelector:@selector(reApplyFrame) withObject:nil afterDelay:0.3];
   }
 
   if (!XSendEvent(dpy, DefaultRootWindow(dpy), False, mask, &xev)) {
-    fprintf(stderr, "Error: sending fullscreen event to xserver\n");
+    NSLog(@"Error: sending fullscreen event to xserver");
   }
+}
+
+- (void) saveFrameUsingName: (NSString*)name {
+  if (fullscreen) return;
+  else [super saveFrameUsingName:name];
+}
+
+- (void) reApplyFrame {
+  lastFrame.size.width++; //hack to force resize
+  [self _applyFrame:lastFrame];
+  [self display];
 }
 
 @end

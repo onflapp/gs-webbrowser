@@ -42,6 +42,7 @@
 + (Document*) lastActiveDocument;
 
 - (NSWindow*) window;
+- (NSView*) webView;
 
 - (void) loadLocation:(id) sender;
 - (void) goBack:(id) sender;

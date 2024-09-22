@@ -12,9 +12,10 @@
     };
     FirstResponder = {
 	Actions = (
-	    "saveBookmark:",
+	    "toggleFullScreen:",
 	    "orderFrontFontPanel:",
 	    "performZoomAction:",
+	    "saveBookmark:",
 	    "showDebugWindow:",
 	    "showPrefPanel:"
 	);
